@@ -41,6 +41,12 @@ dprFunctions.halflingluckydisadvantage = (Phitorsave) => {
   return dprFunctions.disadvantage(Phitorsave) + ((2 / 20 * (Math.pow(Phitorsave, 2))))
 }
 
+// wrap this with adv, disadv, elven accuraccy, halfling lucky, etc...
+// to get probability of crit under those effects
+dprFunctions.critchance = (threshold) => {
+  return ((21 - threshold) / 20)
+}
+
 // need to create a good way to make this generic and make sure
 // it works with negative effects as well
 // https://docs.google.com/document/d/11eTMZPPxWXHY0rQEhK1msO-40BcCGrzArSl4GX4CiJE/edit#
@@ -50,6 +56,15 @@ dprFunctions.bless = (ac, hitbonus) => {
     return ((1 / bless.length) * dprFunctions.hit(ac, hitbonus+bonus)) 
   })
   return cthwb.reduce((a, b) => a + b, 0) // sum chances
+}
+
+dprFunctions.avgdamage = (dice) => {
+  var dicerange = []
+  for (var i = 1; i <= dice; i++) {
+    dicerange.push(i)
+  }
+  var totals = dicerange.reduce((a, b) => a + b, 0)
+  return (totals / dice)
 }
 
 export default dprFunctions

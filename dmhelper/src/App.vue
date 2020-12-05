@@ -10,6 +10,7 @@
     <div>Chance to hit with Halfing Lucky and Advantage: {{ halflingluckyadvantage }}</div>
     <div>Chance to hit with Halfling Lucky and Disadvantage: {{ halflingluckydisadvantage }}</div>
     <div>Chance to hit with Bless: {{ bless }}</div>
+    <div>average damage of a d6: {{ dmgd6 }}</div>
   </div>
 </template>
 <script>
@@ -30,7 +31,8 @@ export default {
     halflinglucky: dprFunctions.halflinglucky(dprFunctions.hit(20, 7)),
     halflingluckyadvantage: dprFunctions.halflingluckyadvantage(dprFunctions.hit(20, 7)),
     halflingluckydisadvantage: dprFunctions.halflingluckydisadvantage(dprFunctions.hit(20, 7)),
-    bless: dprFunctions.bless(20, 7)
+    bless: dprFunctions.bless(20, 7),
+    dmgd6: dprFunctions.avgdamage(6)
   })
 }
 </script>
