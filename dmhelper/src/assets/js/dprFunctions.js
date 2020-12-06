@@ -61,6 +61,32 @@ dprFunctions.bless = (ac, hitbonus) => {
   return cthwb.reduce((a, b) => a + b, 0) // sum chances
 }
 
+// two or more arrays
+// 1. get min of both arrays and sum, get max of both arrays and sum
+// 2. create an array of min -> max e.g. bless+bardic(1d6variant) -> 2min-10max, finally do fucntion
+dprFunctions.genericBBB = (ac, hitbonus) => {
+  var bless = [1,2,3,4]
+  var bardic = [1,2,3,4,5,6]
+  var bane = [-1,-2,-3,-4]
+  var fullset = [bless, bardic, bane]
+
+  var min, max = 0
+  fullset.forEach(bonus => {
+    min += Math.min(...bonus)
+    max += Math.max(...bonus)
+  })
+
+  var bonusarray = []
+  for (var i=min; i <= max; i++) {
+    bonusarray.push(i)
+  }
+
+  var cthwb = bonusarray.map(bonus => { 
+    return ((1 / bonusarray.length) * dprFunctions.hit(ac, hitbonus+bonus)) 
+  })
+  return cthwb.reduce((a, b) => a + b, 0) // sum chances
+}
+
 dprFunctions.avgdamage = (dice) => {
   var dicerange = []
   for (var i = 1; i <= dice; i++) {

@@ -45,11 +45,16 @@
       <div class="col-lg-5">Average damage of a d6:</div>
       <div class="col-lg-5">{{ dmgd6 }}</div>
     </div>
+    <div class="row">
+      <div class="col-lg-5">Bless+Bardic chance:</div>
+      <div class="col-lg-5">{{ roundToPercent(blessBardic) }}%</div>
+    </div>
   </div>
 </template>
 <script>
 import playerDprInput from '@/components/playerDprInput.vue'
 import dprFunctions from '@/assets/js/dprFunctions.js'
+import dprModifiers from '@/assets/js/dprModifiers.js'
 export default {
   components: {
     playerDprInput
@@ -84,6 +89,13 @@ export default {
     },
     bless() {
       return dprFunctions.bless(this.inputs.acinput, this.inputs.attackbonus)
+    },
+    blessBardic() {
+      console.log(this.inputs.tohitbuffs)
+      this.inputs.tohitbuffs.forEach(buff => {
+        console.log(dprModifiers[buff]())
+      })
+      return dprFunctions.genericBBB(this.inputs.acinput, this.inputs.attackbonus)
     }
   },
   methods: {
@@ -95,6 +107,7 @@ export default {
     inputs: {
       acinput: 20,
       attackbonus: 7,
+      tohitbuffs: [],
       dmgd6: 0,
       dmgd8: 0,
       dmgd10: 0,
