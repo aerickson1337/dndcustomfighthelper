@@ -52,7 +52,10 @@ dprFunctions.critchance = (threshold) => {
 // https://docs.google.com/document/d/11eTMZPPxWXHY0rQEhK1msO-40BcCGrzArSl4GX4CiJE/edit#
 dprFunctions.bless = (ac, hitbonus) => {
   var bless = [1,2,3,4]
-  var cthwb = bless.map(bonus =>{ 
+  // var bardic = [1,2,3,4,5,6]
+  // var bane = [-1,-2,-3,-4,-5,-6]
+  // var fullset = [1,2,3,4][1,2,3,4,5,6][-1,-2,-3,-4]
+  var cthwb = bless.map(bonus => { 
     return ((1 / bless.length) * dprFunctions.hit(ac, hitbonus+bonus)) 
   })
   return cthwb.reduce((a, b) => a + b, 0) // sum chances

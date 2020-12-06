@@ -20,5 +20,5 @@ export default {
   data: () => ({
     showAlert: false
   })
-};
+}
 </script>
