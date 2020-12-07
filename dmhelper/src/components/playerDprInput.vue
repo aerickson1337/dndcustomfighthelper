@@ -11,9 +11,9 @@
                   v-model="acval" 
                   type="number"
                   :number="true"
-                  id="character-ac" 
+                  id="target-ac" 
                   size="xs" 
-                  placeholder="Character AC"></b-form-input>
+                  placeholder="Target AC"></b-form-input>
             </b-input-group>
           </div>
           <div class="col-xs">
@@ -39,6 +39,10 @@
             <div v-for="dice in diceTypes" :key="dice" class="col-xs">
               <b-form-input :id="dice" class="diceinput" :placeholder="'# of '+dice" :value="[dice].count" @input="updateDice(dice, $event)"></b-form-input>
             </div>
+            <b-input-group-prepend>
+              <span class="input-group-text">Flat Damage</span>
+            </b-input-group-prepend>
+            <b-form-input id="flatDamage" class="diceinput" placeholder="e.g. 5" v-model="flatdamage" :number="true"></b-form-input>
           </b-input-group>
         </div>
         <div class="row my-1">
@@ -86,6 +90,9 @@ export default {
     },
     BBB() {
       this.$emit('update:tohitbuffs', this.BBB)
+    },
+    flatdamage() {
+      this.$emit('update:flatdamage', this.flatdamage)
     }
   },
   methods: {
@@ -102,6 +109,7 @@ export default {
     d8: { value: 8, count: 0 },
     d10: { value: 10, count: 0 },
     d12: { value: 12, count: 0 },
+    flatdamage: '',
     attackbonusval: '',
     bardicDice: '',
     BBB: []

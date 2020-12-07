@@ -88,13 +88,123 @@ dprFunctions.genericBBB = (ac, hitbonus, fullset) => {
   return cthwb.reduce((a, b) => a + b, 0) // sum chances
 }
 
-dprFunctions.avgdamage = (dice, attacks=1) => {
+dprFunctions.avgdamage = (dicesize, numdice) => {
+  if (numdice == 0) {
+    return 0
+  }
   var dicerange = []
-  for (var i = 1; i <= dice; i++) {
+  for (var i = 1; i <= dicesize; i++) {
     dicerange.push(i)
   }
   var totals = dicerange.reduce((a, b) => a + b, 0)
-  return ((totals / dice) * attacks)
+  return ((totals / dicesize) * numdice)
+}
+
+dprFunctions.avgdamageGWF = (dicesize, numdice) => {
+  if (numdice == 0) {
+    return 0
+  }
+  var dicerange = []
+  for (var i = 1; i <= dicesize; i++) {
+    dicerange.push(i)
+  }
+  var totals = dicerange.reduce((a, b) => a + b, 0)
+  var averagefordicesize = ((totals / dicesize) * numdice)
+  
+  dicerange.length = 0
+  for (i = 1; i <= dicesize; i++) {
+    if (i <= 2) {
+      dicerange.push(averagefordicesize)
+    } else {
+      dicerange.push(i)
+    }
+  }
+  var totalsGWF = dicerange.reduce((a, b) => a + b, 0)
+
+  return ((totalsGWF / dicesize) * numdice)
+}
+
+dprFunctions.avgdamageEA = (dicesize, numdice) => {
+  if (numdice == 0) {
+    return 0
+  }
+
+  var dicerange = []
+  for (var i = 1; i <= dicesize; i++) {
+    if (i <= 1) {
+      dicerange.push(2)
+    } else {
+      dicerange.push(i)
+    }
+  }
+  var totals = dicerange.reduce((a, b) => a + b, 0)
+  return ((totals / dicesize) * numdice)
+}
+
+dprFunctions.avgdamageGWFEA = (dicesize, numdice) => {
+  if (numdice == 0) {
+    return 0
+  }
+  var dicerange = []
+  for (var i = 1; i <= dicesize; i++) {
+    if (i <= 1) {
+      dicerange.push(2)
+    } else {
+      dicerange.push(i)
+    }
+  }
+
+  var EAtotal = dicerange.reduce((a, b) => a + b, 0)
+
+  dicerange.length = 0
+  for (i = 1; i <= dicesize; i++) {
+    if (i <= 2) {
+      dicerange.push(EAtotal / dicesize)
+    } else {
+      dicerange.push(i)
+    }
+  }
+
+  var totals = dicerange.reduce((a, b) => a + b, 0)
+  return ((totals / dicesize) * numdice)
+}
+
+dprFunctions.avgdamageFoP = (dicesize, numdice) => {
+  if (numdice == 0) {
+    return 0
+  }
+  var dicerange = []
+  for (var i = 1; i <= dicesize; i++) {
+    dicerange.push(i)
+  }
+  var totals = dicerange.reduce((a, b) => a + b, 0)
+  var averagefordicesize = ((totals / dicesize) * numdice)
+  
+  dicerange.length = 0
+  for (i = 1; i <= dicesize; i++) {
+    if (i <= 1) {
+      dicerange.push(averagefordicesize)
+    } else {
+      dicerange.push(i)
+    }
+  }
+  var totalsFoP = dicerange.reduce((a, b) => a + b, 0)
+
+  return ((totalsFoP / dicesize) * numdice)
+}
+
+dprFunctions.mindamage = (numdice) => {
+  if (numdice == 0) {
+    return 0
+  }
+  return (1 * numdice)
+}
+
+dprFunctions.maxdamage = (dicesize, numdice) => {
+  if (numdice == 0) {
+    return 0
+  }
+  return (dicesize * numdice)
 }
 
 export default dprFunctions
