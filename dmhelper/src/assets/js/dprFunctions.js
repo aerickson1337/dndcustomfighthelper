@@ -88,13 +88,13 @@ dprFunctions.genericBBB = (ac, hitbonus, fullset) => {
   return cthwb.reduce((a, b) => a + b, 0) // sum chances
 }
 
-dprFunctions.avgdamage = (dice) => {
+dprFunctions.avgdamage = (dice, attacks=1) => {
   var dicerange = []
   for (var i = 1; i <= dice; i++) {
     dicerange.push(i)
   }
   var totals = dicerange.reduce((a, b) => a + b, 0)
-  return (totals / dice)
+  return ((totals / dice) * attacks)
 }
 
 export default dprFunctions

@@ -3,28 +3,43 @@
     <b-container fluid>
         <div class="form-group row my-1">
           <div class="col-xs">
-            <b-form-input 
-                v-model="acval" 
-                type="number"
-                :number="true"
-                id="character-ac" 
-                size="xs" 
-                placeholder="Character AC"></b-form-input>
+            <b-input-group>
+              <b-input-group-prepend>
+                <span class="input-group-text">AC</span>
+              </b-input-group-prepend>
+              <b-form-input 
+                  v-model="acval" 
+                  type="number"
+                  :number="true"
+                  id="character-ac" 
+                  size="xs" 
+                  placeholder="Character AC"></b-form-input>
+            </b-input-group>
           </div>
           <div class="col-xs">
+            <b-input-group>
+              <b-input-group-prepend>
+                <span class="input-group-text">Attack Bonus</span>
+              </b-input-group-prepend>
             <b-form-input
-                v-model="attackbonusval" 
+                v-model="attackbonusval"
                 type="number"
                 :number="true"
-                id="attack-bonus" 
+                id="attack-bonus"
                 size="xs" 
                 placeholder="Attack Bonus"></b-form-input>
+            </b-input-group>
           </div>
         </div>
         <div  class="row my-1">
-          <div v-for="dice in diceTypes" :key="dice" class="col-xs">
-            <b-form-input :id="dice" class="diceinput" :placeholder="'# of '+dice"></b-form-input>
-          </div>
+          <b-input-group>
+            <b-input-group-prepend>
+              <span class="input-group-text">Damage Dice</span>
+            </b-input-group-prepend>
+            <div v-for="dice in diceTypes" :key="dice" class="col-xs">
+              <b-form-input :id="dice" class="diceinput" :placeholder="'# of '+dice" :value="[dice].count" @input="updateDice(dice, $event)"></b-form-input>
+            </div>
+          </b-input-group>
         </div>
         <div class="row my-1">
           <div>
@@ -39,7 +54,7 @@
                 <b-form-input id="bardicdice" class="diceinput" size="xs" placeholder="d6" :value="bardicDice">
                 </b-form-input>
               </b-input-group> -->
-              {{ BBB }}
+              <!-- {{ BBB }} -->
             </b-form-checkbox-group>
           </div>
         </div>
@@ -74,11 +89,20 @@ export default {
     }
   },
   methods: {
+    updateDice(dice, event) {
+      this[dice].count = event
+      this.$emit('updateDice', { [dice]: this[dice] })
+    }
   },
   data: () => ({
-    acval: 10,
+    acval: '',
     diceTypes: ['d4','d6','d8','d10','d12'],
-    attackbonusval: 7,
+    d4: { value: 4, count: 0 },
+    d6: { value: 6, count: 0 },
+    d8: { value: 8, count: 0 },
+    d10: { value: 10, count: 0 },
+    d12: { value: 12, count: 0 },
+    attackbonusval: '',
     bardicDice: '',
     BBB: []
   })
