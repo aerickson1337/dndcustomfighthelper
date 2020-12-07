@@ -46,8 +46,8 @@
       <div class="col-lg-5">{{ dmgd6 }}</div>
     </div>
     <div class="row">
-      <div class="col-lg-5">Bless+Bardic chance:</div>
-      <div class="col-lg-5">{{ roundToPercent(blessBardic) }}%</div>
+      <div class="col-lg-5">Buff toggles chance:</div>
+      <div class="col-lg-5">{{ roundToPercent(buffToggles) }}%</div>
     </div>
   </div>
 </template>
@@ -90,12 +90,12 @@ export default {
     bless() {
       return dprFunctions.bless(this.inputs.acinput, this.inputs.attackbonus)
     },
-    blessBardic() {
-      console.log(this.inputs.tohitbuffs)
+    buffToggles() {
+      var bonusbuffs = []
       this.inputs.tohitbuffs.forEach(buff => {
-        console.log(dprModifiers[buff]())
+        bonusbuffs.push(dprModifiers[buff]())
       })
-      return dprFunctions.genericBBB(this.inputs.acinput, this.inputs.attackbonus)
+      return dprFunctions.genericBBB(this.inputs.acinput, this.inputs.attackbonus, bonusbuffs)
     }
   },
   methods: {

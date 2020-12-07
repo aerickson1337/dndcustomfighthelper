@@ -64,13 +64,14 @@ dprFunctions.bless = (ac, hitbonus) => {
 // two or more arrays
 // 1. get min of both arrays and sum, get max of both arrays and sum
 // 2. create an array of min -> max e.g. bless+bardic(1d6variant) -> 2min-10max, finally do fucntion
-dprFunctions.genericBBB = (ac, hitbonus) => {
-  var bless = [1,2,3,4]
-  var bardic = [1,2,3,4,5,6]
-  var bane = [-1,-2,-3,-4]
-  var fullset = [bless, bardic, bane]
+dprFunctions.genericBBB = (ac, hitbonus, fullset) => {
+  // var bless = [1,2,3,4]
+  // var bardic = [1,2,3,4,5,6]
+  // var bane = [-1,-2,-3,-4]
+  // var fullset = [bless, bardic, bane]
 
-  var min, max = 0
+  var min = 0
+  var max = 0
   fullset.forEach(bonus => {
     min += Math.min(...bonus)
     max += Math.max(...bonus)

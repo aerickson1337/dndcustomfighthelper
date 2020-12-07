@@ -26,12 +26,19 @@
             <b-form-input :id="dice" class="diceinput" :placeholder="'# of '+dice"></b-form-input>
           </div>
         </div>
-        <div  class="row my-1">
-          <div class="col-xs">
-            <b-form-checkbox-group id="checkbox-tohit-buffs" v-model="BBB" name="tohit-buffs">
+        <div class="row my-1">
+          <div>
+            <b-form-checkbox-group class="d-flex flex-row" id="checkbox-tohit-buffs" v-model="BBB" name="tohit-buffs">
               <b-form-checkbox value="bless">Bless</b-form-checkbox>
               <b-form-checkbox value="bane">Bane</b-form-checkbox>
-              <b-form-checkbox value="bardic">Bardic</b-form-checkbox><b-input class="diceinput" value="d6"></b-input>
+              <b-form-checkbox value="bardic">Bardic</b-form-checkbox>
+              <!-- <b-input-group>
+                <b-input-group-prepend>
+                  <span class="input-group-text">Bardic</span>
+                </b-input-group-prepend>
+                <b-form-input id="bardicdice" class="diceinput" size="xs" placeholder="d6" :value="bardicDice">
+                </b-form-input>
+              </b-input-group> -->
               {{ BBB }}
             </b-form-checkbox-group>
           </div>
@@ -72,6 +79,7 @@ export default {
     acval: 10,
     diceTypes: ['d4','d6','d8','d10','d12'],
     attackbonusval: 7,
+    bardicDice: '',
     BBB: []
   })
 }
