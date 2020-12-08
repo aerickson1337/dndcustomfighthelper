@@ -1,6 +1,10 @@
 <template>
   <div>
-    <playerDprInput v-bind.sync="inputs" @updateDice="updateDice"></playerDprInput>
+    <playerDprInput v-bind.sync="inputs" 
+      @updateDamageDice="updateDamageDice"
+      @updateBonusDice="updateBonusDice"
+      @updateReductionDice="updateReductionDice">
+    </playerDprInput>
     <div class="row">
       <div class="col-lg-5">Chance to Hit:</div>
       <div class="col-lg-5">{{ roundToPercent(chanceToHit) }}%</div>
@@ -66,6 +70,10 @@
       <div class="col-lg-5">{{ maxDamage }}</div>
     </div>
     <div class="row">
+      <div class="col-lg-5">base DPR:</div>
+      <div class="col-lg-5">{{ DPR }}</div>
+    </div>
+    <div class="row">
       <div class="col-lg-5">Buff toggles chance:</div>
       <div class="col-lg-5">{{ roundToPercent(buffToggles) }}%</div>
     </div>
@@ -74,7 +82,7 @@
 <script>
 import playerDprInput from '@/components/playerDprInput.vue'
 import dprFunctions from '@/assets/js/dprFunctions.js'
-import dprModifiers from '@/assets/js/dprModifiers.js'
+// import dprModifiers from '@/assets/js/dprModifiers.js'
 export default {
   components: {
     playerDprInput
@@ -111,87 +119,123 @@ export default {
       return dprFunctions.bless(this.inputs.acinput, this.inputs.attackbonus)
     },
     buffToggles() {
-      var bonusbuffs = []
-      this.inputs.tohitbuffs.forEach(buff => {
-        bonusbuffs.push(dprModifiers[buff]())
-      })
-      return dprFunctions.genericBBB(this.inputs.acinput, this.inputs.attackbonus, bonusbuffs)
+      var allBonuses = this.generateBonusDiceArray(this.inputs.diceTypes)
+
+      return dprFunctions.genericBBB(this.inputs.acinput, this.inputs.attackbonus, allBonuses)
     },
     averageDamage() {
-      var avgDamage = dprFunctions.avgdamage(this.inputs.d4.value, this.inputs.d4.count) + 
-                      dprFunctions.avgdamage(this.inputs.d6.value, this.inputs.d6.count) + 
-                      dprFunctions.avgdamage(this.inputs.d8.value, this.inputs.d8.count) + 
-                      dprFunctions.avgdamage(this.inputs.d10.value, this.inputs.d10.count) + 
-                      dprFunctions.avgdamage(this.inputs.d12.value, this.inputs.d12.count) +
+      var avgDamage = dprFunctions.avgdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                      dprFunctions.avgdamage(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                      dprFunctions.avgdamage(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                      dprFunctions.avgdamage(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                      dprFunctions.avgdamage(this.inputs.d12.value, this.inputs.d12.damageCount) +
                       this.inputs.flatdamage
       return avgDamage
     },
     averageDamageGWF() {
-      var avgDamage = dprFunctions.avgdamageGWF(this.inputs.d4.value, this.inputs.d4.count) + 
-                dprFunctions.avgdamageGWF(this.inputs.d6.value, this.inputs.d6.count) + 
-                dprFunctions.avgdamageGWF(this.inputs.d8.value, this.inputs.d8.count) + 
-                dprFunctions.avgdamageGWF(this.inputs.d10.value, this.inputs.d10.count) + 
-                dprFunctions.avgdamageGWF(this.inputs.d12.value, this.inputs.d12.count) +
+      var avgDamage = dprFunctions.avgdamageGWF(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                dprFunctions.avgdamageGWF(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                dprFunctions.avgdamageGWF(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                dprFunctions.avgdamageGWF(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                dprFunctions.avgdamageGWF(this.inputs.d12.value, this.inputs.d12.damageCount) +
                 this.inputs.flatdamage
       return avgDamage
     },
     averageDamageEA() {
-      var avgDamage = dprFunctions.avgdamageEA(this.inputs.d4.value, this.inputs.d4.count) + 
-                dprFunctions.avgdamageEA(this.inputs.d6.value, this.inputs.d6.count) + 
-                dprFunctions.avgdamageEA(this.inputs.d8.value, this.inputs.d8.count) + 
-                dprFunctions.avgdamageEA(this.inputs.d10.value, this.inputs.d10.count) + 
-                dprFunctions.avgdamageEA(this.inputs.d12.value, this.inputs.d12.count) +
+      var avgDamage = dprFunctions.avgdamageEA(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                dprFunctions.avgdamageEA(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                dprFunctions.avgdamageEA(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                dprFunctions.avgdamageEA(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                dprFunctions.avgdamageEA(this.inputs.d12.value, this.inputs.d12.damageCount) +
                 this.inputs.flatdamage
       return avgDamage
     },
     averageDamageGWFEA() {
-      var avgDamage = dprFunctions.avgdamageGWFEA(this.inputs.d4.value, this.inputs.d4.count) + 
-                dprFunctions.avgdamageGWFEA(this.inputs.d6.value, this.inputs.d6.count) + 
-                dprFunctions.avgdamageGWFEA(this.inputs.d8.value, this.inputs.d8.count) + 
-                dprFunctions.avgdamageGWFEA(this.inputs.d10.value, this.inputs.d10.count) + 
-                dprFunctions.avgdamageGWFEA(this.inputs.d12.value, this.inputs.d12.count) +
+      var avgDamage = dprFunctions.avgdamageGWFEA(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                dprFunctions.avgdamageGWFEA(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                dprFunctions.avgdamageGWFEA(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                dprFunctions.avgdamageGWFEA(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                dprFunctions.avgdamageGWFEA(this.inputs.d12.value, this.inputs.d12.damageCount) +
                 this.inputs.flatdamage
       console.log(avgDamage)
       return avgDamage
     },
     maxDamage() {
-      var maxDamage = dprFunctions.maxdamage(this.inputs.d4.value, this.inputs.d4.count) + 
-                dprFunctions.maxdamage(this.inputs.d6.value, this.inputs.d6.count) + 
-                dprFunctions.maxdamage(this.inputs.d8.value, this.inputs.d8.count) + 
-                dprFunctions.maxdamage(this.inputs.d10.value, this.inputs.d10.count) + 
-                dprFunctions.maxdamage(this.inputs.d12.value, this.inputs.d12.count) +
+      var maxDamage = dprFunctions.maxdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                dprFunctions.maxdamage(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                dprFunctions.maxdamage(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                dprFunctions.maxdamage(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                dprFunctions.maxdamage(this.inputs.d12.value, this.inputs.d12.damageCount) +
                 this.inputs.flatdamage
       return maxDamage
     },
     minDamage() {
-      var minDamage = dprFunctions.mindamage(this.inputs.d4.count) + 
-                dprFunctions.mindamage(this.inputs.d6.count) + 
-                dprFunctions.mindamage(this.inputs.d8.count) + 
-                dprFunctions.mindamage(this.inputs.d10.count) + 
-                dprFunctions.mindamage(this.inputs.d12.count) +
+      var minDamage = dprFunctions.mindamage(this.inputs.d4.damageCount) + 
+                dprFunctions.mindamage(this.inputs.d6.damageCount) + 
+                dprFunctions.mindamage(this.inputs.d8.damageCount) + 
+                dprFunctions.mindamage(this.inputs.d10.damageCount) + 
+                dprFunctions.mindamage(this.inputs.d12.damageCount) +
                 this.inputs.flatdamage
       return minDamage
+    },
+    DPR() {
+      // console.log(this.chanceToHit, (1/20), this.averageDamage)
+      var givenDPR = dprFunctions.damagePerRound(this.chanceToHit, dprFunctions.critchance(20), this.averageDamage)
+      return givenDPR
     }
   },
   methods: {
     roundToPercent(num) {
       return Math.round(num * 100)
     },
-    updateDice(event) {
+    updateDamageDice(event) {
       var diceKey = Object.keys(event)[0]
-      this.inputs[diceKey].count = event[diceKey].count
+      this.inputs[diceKey].damageCount = event[diceKey].damageCount
+    },
+    updateBonusDice(event) {
+      var diceKey = Object.keys(event)[0]
+      this.inputs[diceKey].bonusCount = event[diceKey].bonusCount
+    },
+    updateReductionDice(event) {
+      var diceKey = Object.keys(event)[0]
+      this.inputs[diceKey].reductionCount = event[diceKey].reductionCount
+    },
+    generateBonusDiceArray(diceTypes) {
+      // all buffs stored here
+      var allBonuses = []
+      diceTypes.forEach(dice => {
+        var bonusDiceArray = [] // create an array for each dice size, reset the array each iteration
+        for (var i = 1; i <= this.inputs[dice].value; i++) {
+          bonusDiceArray.push(i)
+        }
+        // if that dice size has inputs, push that many bonus inputs to allBonuses for math later
+        if (this.inputs[dice].bonusCount > 0) {
+          for (var j = 0; j < this.inputs[dice].bonusCount; j++) {
+            allBonuses.push([...bonusDiceArray])
+          }
+        }
+        // while we do this get the reduction/debuff values as well and push them to allBonuses for math later
+        if (this.inputs[dice].reductionCount > 0) {
+          for (var k = 0; k < this.inputs[dice].reductionCount; k++) {
+            allBonuses.push([...bonusDiceArray].map(x => x * -1))
+          }
+        }
+      })
+      // returns [[1,2,3,4],[-1,-2,-3,-4]] if 1d4 bonus and 1d4 reduction selected, 
+      // scales to any dice input and returns logical outcome of selection
+      return allBonuses
     }
   },
   data: () => ({
     inputs: {
       acinput: 20,
       attackbonus: 7,
-      tohitbuffs: [],
-      d4: { value: 4, count: 0 },
-      d6: { value: 6, count: 0 },
-      d8: { value: 8, count: 0 },
-      d10: { value: 10, count: 0 },
-      d12: { value: 12, count: 0 },
+      diceTypes: ['d4','d6','d8','d10','d12'],
+      d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0 },
+      d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0 },
+      d8: { value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0 },
+      d10: { value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0 },
+      d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0 },
       flatdamage: ''
     }
   })
