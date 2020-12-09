@@ -85,7 +85,7 @@ dprFunctions.genericBBB = (ac, hitbonus, fullset) => {
   var cthwb = bonusarray.map(bonus => { 
     return ((1 / bonusarray.length) * dprFunctions.hit(ac, hitbonus+bonus)) 
   })
-  return cthwb.reduce((a, b) => a + b, 0) // sum chances
+  return cthwb.reduce((a, b) => a + b, 0) // sum chances, return hit chance
 }
 
 dprFunctions.avgdamage = (dicesize, numdice) => {

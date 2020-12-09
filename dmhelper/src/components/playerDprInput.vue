@@ -6,9 +6,8 @@
           <span class="input-group-text">AC</span>
         </b-input-group-prepend>
         <b-form-input
-            v-model="acval" 
+            v-model.number="acval" 
             type="number"
-            :number="true"
             id="target-ac" 
             size="xs"
             class="ACABinput"
@@ -17,9 +16,8 @@
           <span class="input-group-text">Attack Bonus</span>
         </b-input-group-prepend>
         <b-form-input
-            v-model="attackbonusval"
+            v-model.number="attackbonusval"
             type="number"
-            :number="true"
             id="attack-bonus"
             size="xs"
             class="ACABinput"
@@ -49,7 +47,7 @@
       </b-input-group>
     </div>
     <b-btn v-b-toggle.collapse1 variant="secondary" class="btn btn-outline btn-sm">Advanced</b-btn>
-    <b-collapse id="collapse1">
+    <b-collapse id="collapse1" visible>
       <div class="row my-1">
         <b-input-group class="col-lg-6">
           <b-input-group-prepend>
@@ -124,6 +122,9 @@ export default {
     },
     flatdamage() {
       this.$emit('update:flatdamage', this.flatdamage)
+    },
+    selectedExtras() {
+      this.$emit('update:selectedExtras', this.selectedExtras)
     }
   },
   methods: {
@@ -150,16 +151,16 @@ export default {
     d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0 },
     selectedExtras: [],
     extraOptions: [
-      { text: 'Elven Accuracy', value: 'elvenAccuracy' },
-      { text: 'GWF', value: 'GWF' },
+      { text: 'Elven Accuracy', value: 'elvenaccuracy' },
+      { text: 'GWF', value: 'avgdamageGWF' },
+      { text: 'Elemental Adept', value: 'avgdamageEA' },
       { text: 'GWM Crit Bonus', value: 'GWM' },
-      { text: 'Lucky (Halfling)', value: 'halflingLucky' },
-      { text: 'Elemental Adept', value: 'elementalAdept' }
+      { text: 'Lucky (Halfling)', value: 'halflinglucky' }
     ],
     flatdamage: '',
     attackbonusval: '',
     BBB: [],
-    collapsed: true
+    collapsed: false
   })
 }
 </script>

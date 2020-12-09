@@ -25,7 +25,7 @@
       <div class="col-lg-5">Chance to hit with Disadvantage:</div>
       <div class="col-lg-5">{{ roundToPercent(chanceToHitDisadvantage) }}%</div>
     </div>
-    <div class="row">
+    <!-- <div class="row">
       <div class="col-lg-5">Chance to hit with Elven Accuracy:</div>
       <div class="col-lg-5"> {{ roundToPercent(elvenAccuracy) }}%</div>
     </div>
@@ -68,14 +68,14 @@
     <div class="row">
       <div class="col-lg-5">Max damage with selected damage dice:</div>
       <div class="col-lg-5">{{ maxDamage }}</div>
-    </div>
+    </div> -->
     <div class="row">
       <div class="col-lg-5">base DPR:</div>
       <div class="col-lg-5">{{ DPR }}</div>
     </div>
     <div class="row">
-      <div class="col-lg-5">Buff toggles chance:</div>
-      <div class="col-lg-5">{{ roundToPercent(buffToggles) }}%</div>
+      <div class="col-lg-5">Modified DPR:</div>
+      <div class="col-lg-5">{{ buffToggles.toFixed(2) }}</div>
     </div>
   </div>
 </template>
@@ -120,8 +120,30 @@ export default {
     },
     buffToggles() {
       var allBonuses = this.generateBonusDiceArray(this.inputs.diceTypes)
-
-      return dprFunctions.genericBBB(this.inputs.acinput, this.inputs.attackbonus, allBonuses)
+      var hitchance = dprFunctions.genericBBB(this.inputs.acinput, this.inputs.attackbonus, allBonuses)
+      var avgDamage = this.averageDamage
+      // hit chance modifiers
+      // halflinglucky and accuracy stack in theory if you can be both
+      // dont have math for it though
+      if (this.inputs.selectedExtras.includes('elvenaccuracy')) {
+        hitchance = dprFunctions.elvenaccuracy(hitchance)
+      }
+      else if (this.inputs.selectedExtras.includes('halflinglucky')) {
+        hitchance = dprFunctions.halflinglucky(hitchance)
+      }
+      // damage modifiers
+      // TODO: cleanup computed props, probably a better way to handle this?
+      if (this.inputs.selectedExtras.includes('avgdamageGWF')) {
+        avgDamage = this.averageDamageGWF
+      }
+      if (this.inputs.selectedExtras.includes('avgdamageEA')) {
+        avgDamage = this.averageDamageEA
+      }
+      if (this.inputs.selectedExtras.includes('avgdamageEA') && this.inputs.selectedExtras.includes('avgdamageGWF')) {
+        avgDamage = this.averageDamageGWFEA
+      }
+      var buffedDPR = dprFunctions.damagePerRound(hitchance, dprFunctions.critchance(20), avgDamage)
+      return buffedDPR
     },
     averageDamage() {
       var avgDamage = dprFunctions.avgdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
@@ -179,6 +201,7 @@ export default {
       return minDamage
     },
     DPR() {
+      console.log(this.inputs.selectedExtras)
       // console.log(this.chanceToHit, (1/20), this.averageDamage)
       var givenDPR = dprFunctions.damagePerRound(this.chanceToHit, dprFunctions.critchance(20), this.averageDamage)
       return givenDPR
@@ -230,6 +253,7 @@ export default {
     inputs: {
       acinput: 20,
       attackbonus: 7,
+      selectedExtras: [],
       diceTypes: ['d4','d6','d8','d10','d12'],
       d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0 },
       d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0 },
