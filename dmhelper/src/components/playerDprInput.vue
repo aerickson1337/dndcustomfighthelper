@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="col-lg-5">
     <div class="form-group row my-1">
-      <b-input-group class="col-lg-6">
+      <b-input-group>
         <b-input-group-prepend>
           <span class="input-group-text">AC</span>
         </b-input-group-prepend>
@@ -23,10 +23,21 @@
             class="ACABinput"
             placeholder="Attack Bonus">
         </b-form-input>
+        <b-input-group-prepend>
+          <span class="input-group-text">Attacks</span>
+        </b-input-group-prepend>
+        <b-form-input
+            v-model.number="numberofattacksval"
+            type="number"
+            id="number-of-attacks"
+            size="xs"
+            class="ACABinput"
+            placeholder="# of Attacks">
+        </b-form-input>
       </b-input-group>
     </div>
     <div class="row my-1">
-      <b-input-group class="col-lg-6">
+      <b-input-group>
         <b-input-group-prepend>
           <span class="input-group-text">Damage Dice</span>
         </b-input-group-prepend>
@@ -46,10 +57,12 @@
         <b-form-input id="flatDamage" class="diceinput" placeholder="e.g. 5" v-model="flatdamage" :number="true"></b-form-input>
       </b-input-group>
     </div>
-    <b-btn v-b-toggle.collapse1 variant="secondary" class="btn btn-outline btn-sm">Advanced</b-btn>
+    <div class="row my-1">
+      <b-btn v-b-toggle.collapse1 variant="secondary" class="btn btn-outline btn-sm col-lg-10">Advanced</b-btn>
+    </div>
     <b-collapse id="collapse1" visible>
       <div class="row my-1">
-        <b-input-group class="col-lg-6">
+        <b-input-group>
           <b-input-group-prepend>
             <span class="input-group-text">Bless, bardic, etc</span>
           </b-input-group-prepend>
@@ -66,7 +79,7 @@
         </b-input-group>
       </div>
       <div class="row my-1">
-        <b-input-group class="col-lg-6">
+        <b-input-group>
           <b-input-group-prepend>
             <span class="input-group-text">Bane, Synaptic Static, etc</span>
           </b-input-group-prepend>
@@ -83,8 +96,8 @@
         </b-input-group>
       </div>
       <div class="row my-1">
-        <b-input-group class="col-lg-6">
-          <b-form-group>
+        <b-input-group>
+          <b-form-group style="margin-bottom: 0px;">
             <b-form-checkbox-group
               id="checkbox-group-1"
               v-model="selectedExtras"
@@ -92,6 +105,23 @@
               name="extraOptions-1"
             ></b-form-checkbox-group>
           </b-form-group>
+        </b-input-group>
+      </div>
+      <div class="row my-1">
+        <b-input-group>
+          <b-input-group-prepend>
+            <span class="input-group-text">Crit Bonuses</span>
+          </b-input-group-prepend>
+          <div v-for="dice in diceTypes" :key="dice" class="col-xs" id="critbonusdice">
+            <b-form-input
+              :id="dice"
+              class="diceinput"
+              :placeholder="'# of '+dice"
+              :value="[dice].criticalCount"
+              maxlength="4"
+              @input="updateCriticalDice(dice, $event)">
+            </b-form-input>
+          </div>
         </b-input-group>
       </div>
     </b-collapse>
@@ -108,6 +138,10 @@ export default {
       type: Number,
       required: true
     },
+    numberofattacks: {
+      type: Number,
+      required: true
+    },
     diceTypes: {
       type: Array,
       required: true
@@ -120,6 +154,9 @@ export default {
     attackbonusval() {
       this.$emit('update:attackbonus', this.attackbonusval)
     },
+    numberofattacksval() {
+      this.$emit('update:numberofattacks', this.numberofattacksval)
+    },
     flatdamage() {
       this.$emit('update:flatdamage', this.flatdamage)
     },
@@ -129,7 +166,6 @@ export default {
   },
   methods: {
     updateDamageDice(dice, event) {
-      console.log(dice)
       this[dice].damageCount = event
       this.$emit('updateDamageDice', { [dice]: this[dice] })
     },
@@ -140,15 +176,22 @@ export default {
     updateReductionDice(dice, event) {
       this[dice].reductionCount = event
       this.$emit('updateReductionDice', { [dice]: this[dice] })
+    },
+    updateCriticalDice(dice, event) {
+      this[dice].reductionCount = event
+      this.$emit('updateCriticalDice', { [dice]: this[dice] })
     }
   },
   data: () => ({
     acval: '',
-    d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0 },
-    d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0 },
-    d8: { value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0 },
-    d10: { value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0 },
-    d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0 },
+    attackbonusval: '',
+    numberofattacksval: '',
+    flatdamage: '',
+    d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
+    d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
+    d8: { value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
+    d10: { value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
+    d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
     selectedExtras: [],
     extraOptions: [
       { text: 'Elven Accuracy', value: 'elvenaccuracy' },
@@ -157,9 +200,6 @@ export default {
       { text: 'GWM Crit Bonus', value: 'GWM' },
       { text: 'Lucky (Halfling)', value: 'halflinglucky' }
     ],
-    flatdamage: '',
-    attackbonusval: '',
-    BBB: [],
     collapsed: false
   })
 }
@@ -169,7 +209,7 @@ export default {
   max-width: 80px;
 }
 .ACABinput {
-  max-width: 243px;
+  max-width: 136px;
 }
 .input-group-text {
   color: #FFFFFF;

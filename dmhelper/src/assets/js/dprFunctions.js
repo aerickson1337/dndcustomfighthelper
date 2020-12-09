@@ -159,7 +159,7 @@ dprFunctions.avgdamageGWFEA = (dicesize, numdice) => {
   dicerange.length = 0
   for (i = 1; i <= dicesize; i++) {
     if (i <= 2) {
-      dicerange.push(EAtotal / dicesize)
+      dicerange.push((EAtotal / dicesize))
     } else {
       dicerange.push(i)
     }
