@@ -1,5 +1,25 @@
 # dmhelper
 
+layout thoughts so far
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ## Project setup
 ```
 npm install

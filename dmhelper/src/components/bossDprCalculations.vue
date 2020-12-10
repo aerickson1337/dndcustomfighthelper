@@ -1,13 +1,12 @@
 <template>
   <div>
-    <playerDprInput
+    <bossDprInput
       v-bind.sync="inputs"
-      :player="player"
       @updateDamageDice="updateDamageDice"
       @updateBonusDice="updateBonusDice"
       @updateReductionDice="updateReductionDice"
       @updateCriticalDice="updateCriticalDice">
-    </playerDprInput>
+    </bossDprInput>
     <div class="row">
       <div class="col">Chance to Hit:</div>
       <div class="col">{{ roundToPercent(chanceToHit) }}%</div>
@@ -40,18 +39,11 @@
   </div>
 </template>
 <script>
-import playerDprInput from '@/components/playerDprInput.vue'
+import bossDprInput from '@/components/bossDprInput.vue'
 import dprFunctions from '@/assets/js/dprFunctions.js'
-// import dprModifiers from '@/assets/js/dprModifiers.js'
 export default {
   components: {
-    playerDprInput
-  },
-  props: {
-    player: {
-      type: String,
-      required: true
-    },
+    bossDprInput
   },
   computed: {
     chanceToHit() {
