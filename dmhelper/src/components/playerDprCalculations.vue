@@ -1,36 +1,35 @@
 <template>
   <div>
-    <bossDprInput
+    <playerDprInput
       v-bind.sync="inputs"
+      :player="player"
       @updateDamageDice="updateDamageDice"
       @updateBonusDice="updateBonusDice"
       @updateReductionDice="updateReductionDice"
-      @updateCriticalDice="updateCriticalDice"
-      @updateBossAC="updateBossAC">
-    </bossDprInput>
-    <div v-for="player in Object.keys(playerData)" :key="player">
-      DPS VS {{player}}
-      <dprDisplay
-        v-bind="{inputs}"
-        :targetAC="playerData[player].playerAC">
-      </dprDisplay>
-      <hr/>
-    </div>
+      @updateCriticalDice="updateCriticalDice">
+    </playerDprInput>
+    <dprDisplay
+      v-bind="{inputs}"
+      :targetAC="bossAC">
+    </dprDisplay>
   </div>
 </template>
 <script>
-import bossDprInput from '@/components/bossDprInput.vue'
+import playerDprInput from '@/components/playerDprInput.vue'
 import dprDisplay from '@/components/dprDisplay.vue'
 export default {
-  props: {
-    playerData: {
-      type: Object,
-      required: true
-    }
-  },
   components: {
-    bossDprInput,
+    playerDprInput,
     dprDisplay
+  },
+  props: {
+    bossAC: {
+      required: true
+    },
+    player: {
+      type: String,
+      required: true
+    },
   },
   computed: {
   },
@@ -53,10 +52,15 @@ export default {
     updateCriticalDice(event) {
       var diceKey = Object.keys(event)[0]
       this.inputs[diceKey].criticalCount = event[diceKey].criticalCount
-    },
-    updateBossAC(event) {
-      this.inputs.acinput = event
-      this.$emit('updateBossAC', this.inputs.acinput)
+    }
+  },
+  watch: {
+    inputs: {
+      deep: true,
+      handler() {
+        var playerData = { playerName: this.player, playerAC: this.inputs.acinput }
+        this.$emit('updatePlayerAC', playerData)
+      }
     }
   },
   data: () => ({

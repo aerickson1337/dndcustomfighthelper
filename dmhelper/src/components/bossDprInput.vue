@@ -82,7 +82,7 @@ export default {
   },
   watch: {
     acval() {
-      this.$emit('update:acinput', this.acval)
+      this.$emit('updateBossAC', this.acval)
     },
     attackbonusval() {
       this.$emit('update:attackbonus', this.attackbonusval)

@@ -212,7 +212,6 @@ dprFunctions.damagePerRound = (hitchance, critthreshold, avgdamage) => {
   var C = critthreshold
   var DPH = avgdamage
   var DPC = DPH*2
-  console.log(C)
   return ((P - C) * DPH) + (C * DPC)
 }
 

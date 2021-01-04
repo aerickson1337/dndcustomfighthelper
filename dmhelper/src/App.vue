@@ -1,32 +1,70 @@
 <template>
   <div class="container-fluid">
     <div class="row">
+      <b-input-group>
+        <b-input-group-prepend>
+          <span class="input-group-text">Player Count</span>
+        </b-input-group-prepend>
+        <b-form-input
+            v-model.number="playerCount"
+            type="number"
+            id="playerCount"
+            size="xs"
+            class="ACABinput"></b-form-input>
+      </b-input-group>
       <div class="col-lg-6">
-        <div v-for="player in players" :key="player">
-          <testing :player="player"></testing>
+        <div v-for="player in playerList" :key="player">
+          <playerDprCalculations
+            :player="player"
+            :bossAC="bossAC"
+            @updatePlayerAC="updatePlayerAC">
+          </playerDprCalculations>
           <hr>
         </div>
       </div>
       <div class="col-lg-6">
-        <bossDprCalculations></bossDprCalculations>
+        <bossDprCalculations
+          :playerData="playerData"
+          @updateBossAC="updateBossAC">
+        </bossDprCalculations>
       </div>
     </div>
   </div>
 </template>
 <script>
-import testing from '@/components/testing.vue'
+import playerDprCalculations from '@/components/playerDprCalculations.vue'
 import bossDprCalculations from '@/components/bossDprCalculations.vue'
 export default {
   components: {
-    testing,
+    playerDprCalculations,
     bossDprCalculations
   },
   computed: {
+    playerList() {
+      var playerList = []
+      for (var i = 0; i < this.playerCount; i++) {
+        playerList.push('player' + i)
+      }
+      return playerList
+    },
+    updatedPlayerData() {
+      return this.playerData
+    }
   },
   methods: {
+    updateBossAC(event) {
+      this.bossAC = event
+    },
+    updatePlayerAC(event) {
+      this.$set(this.playerData, event.playerName, { playerAC: event.playerAC })
+      // this.bossInputs.acinput = event
+      // this.$emit('updatePlayerAC', this.bossInputs.acinput)
+    }
   },
   data: () => ({
-    players: ['player1', 'player2']
+    playerCount: 1,
+    playerData: {},
+    bossAC: ''
   })
 }
 </script>
