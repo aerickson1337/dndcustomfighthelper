@@ -1,22 +1,14 @@
 <template>
   <div>
+    <h1>{{attackName}}</h1>
+    {{inputs}}
     <div class="form-group row my-1">
       <b-input-group>
-        <b-input-group-prepend>
-          <span class="input-group-text">AC</span>
-        </b-input-group-prepend>
-        <b-form-input
-            v-model.number="acval"
-            type="number"
-            id="boss-ac"
-            size="xs"
-            class="ACABinput"
-            placeholder="Boss AC"></b-form-input>
         <b-input-group-prepend>
           <span class="input-group-text">Default Attack Bonus</span>
         </b-input-group-prepend>
         <b-form-input
-            v-model.number="attackbonusval"
+            v-model.number="inputs.attackbonusval"
             type="number"
             id="attack-bonus"
             size="xs"
@@ -27,7 +19,7 @@
           <span class="input-group-text">Attacks</span>
         </b-input-group-prepend>
         <b-form-input
-            v-model.number="numberofattacksval"
+            v-model.number="inputs.numberofattacksval"
             type="number"
             id="number-of-attacks"
             size="xs"
@@ -41,7 +33,7 @@
         <b-input-group-prepend>
           <span class="input-group-text">Damage Dice</span>
         </b-input-group-prepend>
-        <div v-for="dice in diceTypes" :key="dice" class="col-xs">
+        <div v-for="dice in inputs.diceTypes" :key="dice" class="col-xs">
           <b-form-input
             :id="dice"
             class="diceinput"
@@ -63,27 +55,15 @@
 <script>
 export default {
   props: {
-    acinput: {
-      type: Number,
+    inputs: {
+      type: Object,
       required: true
     },
-    attackbonus: {
-      type: Number,
-      required: true
-    },
-    numberofattacks: {
-      type: Number,
-      required: true
-    },
-    diceTypes: {
-      type: Array,
-      required: true
+    attackName: {
+      type: String
     }
   },
   watch: {
-    acval() {
-      this.$emit('updateBossAC', this.acval)
-    },
     attackbonusval() {
       this.$emit('update:attackbonus', this.attackbonusval)
     },
@@ -100,7 +80,7 @@ export default {
   methods: {
     updateDamageDice(dice, event) {
       this[dice].damageCount = event
-      this.$emit('updateDamageDice', { [dice]: this[dice] })
+      this.$emit('updateDamageDice', { attackName: this.attackName, dice: { [dice]: this[dice] } })
     },
     updateBonusDice(dice, event) {
       this[dice].bonusCount = event
@@ -116,7 +96,6 @@ export default {
     }
   },
   data: () => ({
-    acval: '',
     attackbonusval: '',
     numberofattacksval: '',
     flatdamage: '',

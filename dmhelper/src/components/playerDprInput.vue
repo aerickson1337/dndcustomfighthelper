@@ -6,33 +6,49 @@
           <span class="input-group-text">AC</span>
         </b-input-group-prepend>
         <b-form-input
-            v-model.number="acval" 
-            type="number"
-            id="player-ac" 
-            size="xs"
-            class="ACABinput"
-            placeholder="Player AC"></b-form-input>
+          v-model.number="acval" 
+          type="number"
+          id="player-ac"
+          size="xs"
+          class="ACABinput"
+          placeholder="Player AC">
+        </b-form-input>
+        <b-input-group-prepend>
+          <span class="input-group-text">HP</span>
+        </b-input-group-prepend>
+        <b-form-input
+          v-model.number="hpval"
+          type="number"
+          id="player-HP"
+          size="xs"
+          class="ACABinput"
+          placeholder="Player HP">
+        </b-form-input>
+      </b-input-group>
+    </div>
+    <div class="form-group row my-1">
+      <b-input-group>
         <b-input-group-prepend>
           <span class="input-group-text">Attack Bonus</span>
         </b-input-group-prepend>
         <b-form-input
-            v-model.number="attackbonusval"
-            type="number"
-            id="attack-bonus"
-            size="xs"
-            class="ACABinput"
-            placeholder="Attack Bonus">
+          v-model.number="attackbonusval"
+          type="number"
+          id="attack-bonus"
+          size="xs"
+          class="ACABinput"
+          placeholder="Attack Bonus">
         </b-form-input>
         <b-input-group-prepend>
           <span class="input-group-text">Attacks</span>
         </b-input-group-prepend>
         <b-form-input
-            v-model.number="numberofattacksval"
-            type="number"
-            id="number-of-attacks"
-            size="xs"
-            class="ACABinput"
-            placeholder="# of Attacks">
+          v-model.number="numberofattacksval"
+          type="number"
+          id="number-of-attacks"
+          size="xs"
+          class="ACABinput"
+          placeholder="# of Attacks">
         </b-form-input>
       </b-input-group>
     </div>
@@ -58,9 +74,9 @@
       </b-input-group>
     </div>
     <div class="row my-1">
-      <b-btn v-b-toggle.collapse1 variant="secondary" class="btn btn-outline btn-sm col-lg-10">Advanced</b-btn>
+      <b-btn v-b-toggle="'collapse-' + player" variant="secondary" class="btn btn-outline btn-sm col-lg-10">Advanced</b-btn>
     </div>
-    <b-collapse id="collapse1" visible>
+    <b-collapse :id="'collapse-' + player">
       <div class="row my-1">
         <b-input-group>
           <b-input-group-prepend>
@@ -85,12 +101,12 @@
           </b-input-group-prepend>
           <div v-for="dice in diceTypes" :key="dice" class="col-xs" id="reductiontohitdice">
             <b-form-input
-            :id="dice"
-            class="diceinput"
-            :placeholder="'# of '+dice"
-            :value="[dice].reductionCount"
-            maxlength="4"
-            @input="updateReductionDice(dice, $event)">
+              :id="dice"
+              class="diceinput"
+              :placeholder="'# of '+dice"
+              :value="[dice].reductionCount"
+              maxlength="4"
+              @input="updateReductionDice(dice, $event)">
             </b-form-input>
           </div>
         </b-input-group>
@@ -188,6 +204,7 @@ export default {
   },
   data: () => ({
     acval: '',
+    hpval: '',
     attackbonusval: '',
     numberofattacksval: '',
     flatdamage: '',
@@ -203,8 +220,7 @@ export default {
       { text: 'Elemental Adept', value: 'avgdamageEA' },
       { text: 'GWM Crit Bonus', value: 'GWM' },
       { text: 'Lucky (Halfling)', value: 'halflinglucky' }
-    ],
-    collapsed: false
+    ]
   })
 }
 </script>

@@ -9,7 +9,7 @@
       @updateCriticalDice="updateCriticalDice">
     </playerDprInput>
     <dprDisplay
-      v-bind="{inputs}"
+      v-bind="inputs"
       :targetAC="bossAC">
     </dprDisplay>
   </div>

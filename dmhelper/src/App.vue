@@ -1,18 +1,21 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <b-input-group>
-        <b-input-group-prepend>
-          <span class="input-group-text">Player Count</span>
-        </b-input-group-prepend>
-        <b-form-input
-            v-model.number="playerCount"
-            type="number"
-            id="playerCount"
-            size="xs"
-            class="ACABinput"></b-form-input>
-      </b-input-group>
       <div class="col-lg-6">
+        <div class="form-group row my-1">
+          <b-input-group>
+            <b-input-group-prepend>
+              <span class="input-group-text">Player Count</span>
+            </b-input-group-prepend>
+            <b-form-input
+              v-model.number="playerCount"
+              type="number"
+              id="playerCount"
+              size="xs"
+              class="ACABinput">
+            </b-form-input>
+          </b-input-group>
+        </div>
         <div v-for="player in playerList" :key="player">
           <playerDprCalculations
             :player="player"
