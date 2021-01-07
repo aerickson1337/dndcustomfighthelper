@@ -203,8 +203,8 @@ export default {
     }
   },
   data: () => ({
-    acval: '',
-    hpval: '',
+    acval: 16,
+    hpval: 50,
     attackbonusval: '',
     numberofattacksval: '',
     flatdamage: '',

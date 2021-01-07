@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{dataObj}}
     <div class="form-group row my-1" style="margin-bottom: 0rem;">
       <b-input-group>
         <b-button variant="success" @click="addAttack()">Add Attack</b-button>
@@ -71,11 +70,6 @@ export default {
   computed: {
   },
   watch: {
-    attackList() {
-      this.attackList.forEach(item => {
-        this.$set(this.dataObj, item, { inputs: this.inputs })
-      })
-    }
   },
   methods: {
     roundToPercent(num) {
@@ -106,6 +100,9 @@ export default {
     addAttack() {
       if (!(this.attackList.includes(this.attackName))) {
         this.attackList.push(this.attackName)
+        // this.dataObj = $.extend({}, this.dataObj)
+        // this.dataObj[this.attackName] = JSON.parse(JSON.stringify({ inputs: { ...this.inputs } }))
+        this.$set(this.dataObj, this.attackName, JSON.parse(JSON.stringify({ inputs: { ...this.inputs } })))
       } else {
         console.log('if ur reading this u did the same attack name twice nerd.')
       }

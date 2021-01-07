@@ -36,7 +36,8 @@ export default {
   props: {
     targetAC: {
       type: Number,
-      required: true
+      required: true,
+      default: 16
     },
     inputs: {
       type: Object,
