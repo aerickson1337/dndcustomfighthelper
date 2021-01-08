@@ -1,18 +1,17 @@
 <template>
   <div class="container-fluid">
     <div class="row">
-      <div class="col-lg-6">
-        <div class="form-group row my-1">
+      <div class="col-lg-6 w-50">
+        <div class="form-group row my-1 no-margin">
           <b-input-group>
             <b-input-group-prepend>
               <span class="input-group-text">Player Count</span>
             </b-input-group-prepend>
             <b-form-input
               v-model.number="playerCount"
-              type="number"
               id="playerCount"
               size="xs"
-              class="ACABinput">
+              class="ACABinput input-override">
             </b-form-input>
           </b-input-group>
         </div>
@@ -22,10 +21,10 @@
             :bossAC="bossAC"
             @updatePlayerAC="updatePlayerAC">
           </playerDprCalculations>
-          <hr>
+          <hr class="line-breaker"/>
         </div>
       </div>
-      <div class="col-lg-6">
+      <div class="col-lg-6 w-50">
         <bossDprCalculations
           :playerData="playerData"
           @updateBossAC="updateBossAC">
@@ -67,7 +66,38 @@ export default {
   data: () => ({
     playerCount: 1,
     playerData: {},
-    bossAC: ''
+    bossAC: 16
   })
 }
 </script>
+<style>
+.no-margin {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+.line-breaker {
+  border-top: 1px solid white;
+}
+.input-override {
+  background-color: #303030;
+  color: white;
+}
+.input-override:focus {
+  background-color: #202020;
+  color: white;
+}
+.input-override:hover {
+  background-color: #202020;
+}
+.diceinput {
+  max-width: 80px;
+  color: white;
+}
+.ACABinput {
+  max-width: 136px;
+  color: white;
+}
+.input-group-text {
+  color: #FFFFFF;
+}
+</style>

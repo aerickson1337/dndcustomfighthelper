@@ -1,7 +1,7 @@
 <template>
   <div>
     <playerDprInput
-      v-bind.sync="inputs"
+      v-bind.sync="playerData[player]"
       :player="player"
       @updateDamageDice="updateDamageDice"
       @updateBonusDice="updateBonusDice"
@@ -9,7 +9,7 @@
       @updateCriticalDice="updateCriticalDice">
     </playerDprInput>
     <dprDisplay
-      v-bind="inputs"
+      v-bind.sync="playerData[player]"
       :targetAC="bossAC">
     </dprDisplay>
   </div>
@@ -33,6 +33,9 @@ export default {
   },
   computed: {
   },
+  created() {
+    this.$set(this.playerData, this.player, JSON.parse(JSON.stringify({ inputs: { ...this.inputs } })))
+  },
   methods: {
     roundToPercent(num) {
       return Math.round(num * 100)
@@ -55,15 +58,16 @@ export default {
     }
   },
   watch: {
-    inputs: {
+    playerData: {
       deep: true,
       handler() {
-        var playerData = { playerName: this.player, playerAC: this.inputs.acinput }
+        var playerData = { playerName: this.player, playerAC: this.playerData[this.player].inputs.acinput }
         this.$emit('updatePlayerAC', playerData)
       }
     }
   },
   data: () => ({
+    playerData: {},
     inputs: {
       acinput: 20,
       attackbonus: 7,

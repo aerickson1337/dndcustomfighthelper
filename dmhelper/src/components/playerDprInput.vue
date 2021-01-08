@@ -1,91 +1,81 @@
 <template>
   <div>
-    <div class="form-group row my-1">
+    <div class="form-group row my-1 no-margin">
       <b-input-group>
         <b-input-group-prepend>
           <span class="input-group-text">AC</span>
         </b-input-group-prepend>
-        <b-form-input
+        <b-input
           v-model.number="acval" 
-          type="number"
           id="player-ac"
           size="xs"
-          class="ACABinput"
+          class="ACABinput input-override"
           placeholder="Player AC">
-        </b-form-input>
+        </b-input>
         <b-input-group-prepend>
           <span class="input-group-text">HP</span>
         </b-input-group-prepend>
-        <b-form-input
+        <b-input
           v-model.number="hpval"
-          type="number"
           id="player-HP"
           size="xs"
-          class="ACABinput"
-          placeholder="Player HP">
-        </b-form-input>
-      </b-input-group>
-    </div>
-    <div class="form-group row my-1">
-      <b-input-group>
+          class="ACABinput input-override">
+        </b-input>
         <b-input-group-prepend>
           <span class="input-group-text">Attack Bonus</span>
         </b-input-group-prepend>
-        <b-form-input
+        <b-input
           v-model.number="attackbonusval"
-          type="number"
           id="attack-bonus"
           size="xs"
-          class="ACABinput"
-          placeholder="Attack Bonus">
-        </b-form-input>
+          class="ACABinput input-override"
+          placeholder="e.g. 7">
+        </b-input>
         <b-input-group-prepend>
           <span class="input-group-text">Attacks</span>
         </b-input-group-prepend>
-        <b-form-input
+        <b-input
           v-model.number="numberofattacksval"
-          type="number"
           id="number-of-attacks"
-          size="xs"
-          class="ACABinput"
-          placeholder="# of Attacks">
-        </b-form-input>
+          class="col input-override"
+          placeholder="e.g. 1">
+        </b-input>
       </b-input-group>
     </div>
-    <div class="row my-1">
+    <div class="form-group row my-1 no-margin">
       <b-input-group>
         <b-input-group-prepend>
           <span class="input-group-text">Damage Dice</span>
         </b-input-group-prepend>
-        <div v-for="dice in diceTypes" :key="dice" class="col-xs">
-          <b-form-input
+        <div v-for="dice in inputs.diceTypes" :key="dice" class="col-xs">
+          <b-input
             :id="dice"
-            class="diceinput"
+            class="diceinput input-override"
             :placeholder="'# of '+dice"
             :value="[dice].damageCount"
             maxlength="4"
             @input="updateDamageDice(dice, $event)">
-          </b-form-input>
+          </b-input>
         </div>
         <b-input-group-prepend>
           <span class="input-group-text">Flat</span>
         </b-input-group-prepend>
-        <b-form-input id="flatDamage" class="diceinput" placeholder="e.g. 5" v-model="flatdamage" :number="true"></b-form-input>
+        <b-form-input id="flatDamage" class="col input-override" placeholder="e.g. 5" v-model="flatdamage" :number="true"></b-form-input>
       </b-input-group>
     </div>
-    <div class="row my-1">
-      <b-btn v-b-toggle="'collapse-' + player" variant="secondary" class="btn btn-outline btn-sm col-lg-10">Advanced</b-btn>
+    <div class="form-group row my-1 no-margin">
+      <b-btn v-b-toggle="'collapse-' + player" variant="secondary" class="btn btn-outline btn-sm col-lg">Advanced</b-btn>
     </div>
-    <b-collapse :id="'collapse-' + player">
-      <div class="row my-1">
+    <b-collapse :id="'collapse-' + player" class="col">
+      <div class="form-group row my-1">
         <b-input-group>
           <b-input-group-prepend>
             <span class="input-group-text">Bless, bardic, etc</span>
           </b-input-group-prepend>
-          <div v-for="dice in diceTypes" :key="dice" class="col-xs" id="bonustohitdice">
+          <div v-for="dice in inputs.diceTypes" :key="dice" class="col-xs" id="bonustohitdice">
             <b-form-input
               :id="dice"
-              class="diceinput"
+              class="diceinput input-override"
               :placeholder="'# of '+dice"
               :value="[dice].bonusCount"
               maxlength="4"
@@ -94,15 +84,15 @@
           </div>
         </b-input-group>
       </div>
-      <div class="row my-1">
+      <div class="form-group row my-1">
         <b-input-group>
           <b-input-group-prepend>
             <span class="input-group-text">Bane, Synaptic Static, etc</span>
           </b-input-group-prepend>
-          <div v-for="dice in diceTypes" :key="dice" class="col-xs" id="reductiontohitdice">
+          <div v-for="dice in inputs.diceTypes" :key="dice" class="col-xs" id="reductiontohitdice">
             <b-form-input
               :id="dice"
-              class="diceinput"
+              class="diceinput input-override"
               :placeholder="'# of '+dice"
               :value="[dice].reductionCount"
               maxlength="4"
@@ -111,7 +101,7 @@
           </div>
         </b-input-group>
       </div>
-      <div class="row my-1">
+      <div class="form-group row my-1">
         <b-input-group>
           <b-form-group style="margin-bottom: 0px;">
             <b-form-checkbox-group
@@ -123,15 +113,15 @@
           </b-form-group>
         </b-input-group>
       </div>
-      <div class="row my-1">
+      <div class="form-group row my-1">
         <b-input-group>
           <b-input-group-prepend>
             <span class="input-group-text">Crit Bonuses</span>
           </b-input-group-prepend>
-          <div v-for="dice in diceTypes" :key="dice" class="col-xs" id="critbonusdice">
+          <div v-for="dice in inputs.diceTypes" :key="dice" class="col-xs" id="critbonusdice">
             <b-form-input
               :id="dice"
-              class="diceinput"
+              class="diceinput input-override"
               :placeholder="'# of '+dice"
               :value="[dice].criticalCount"
               maxlength="4"
@@ -146,20 +136,8 @@
 <script>
 export default {
   props: {
-    acinput: {
-      type: Number,
-      required: true
-    },
-    attackbonus: {
-      type: Number,
-      required: true
-    },
-    numberofattacks: {
-      type: Number,
-      required: true
-    },
-    diceTypes: {
-      type: Array,
+    inputs: {
+      type: Object,
       required: true
     },
     player: {
@@ -224,14 +202,9 @@ export default {
   })
 }
 </script>
-<style >
-.diceinput {
-  max-width: 80px;
-}
-.ACABinput {
-  max-width: 136px;
-}
-.input-group-text {
-  color: #FFFFFF;
+<style scoped>
+::v-deep .custom-control-label {
+  font-size: 12px;
+  margin: auto;
 }
 </style>

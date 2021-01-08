@@ -1,22 +1,21 @@
 <template>
   <div>
-    <div class="form-group row my-1" style="margin-bottom: 0rem;">
+    <div class="form-group row my-1 no-margin">
       <b-input-group>
         <b-button variant="success" @click="addAttack()">Add Attack</b-button>
-        <b-input v-model="attackName" placeholder="Attack Name"></b-input>
+        <b-input v-model="attackName" class="input-override" placeholder="e.g. MLG DoOm BlAdE SmiTe"></b-input>
       </b-input-group>
     </div>
-    <div class="form-group row">
+    <div class="form-group row my-1 no-margin">
       <b-input-group>
         <b-input-group-prepend>
           <span class="input-group-text">AC</span>
         </b-input-group-prepend>
         <b-form-input
           v-model.number="inputs.bossAC"
-          type="number"
           id="boss-ac"
           size="xs"
-          class="ACABinput"
+          class="ACABinput input-override"
           placeholder="Boss AC">
         </b-form-input>
         <b-input-group-prepend>
@@ -24,10 +23,9 @@
         </b-input-group-prepend>
         <b-form-input
           v-model.number="inputs.bossHP"
-          type="number"
           id="boss-hp"
           size="xs"
-          class="ACABinput"
+          class="ACABinput input-override"
           placeholder="Boss HP">
         </b-form-input>
       </b-input-group>
@@ -37,18 +35,20 @@
       <bossDprInput
         :attackName="attack"
         v-bind.sync="dataObj[attack]"
-        @updateDamageDice="updateDamageDice"
-        @updateBonusDice="updateBonusDice"
-        @updateReductionDice="updateReductionDice"
-        @updateCriticalDice="updateCriticalDice">
+        @updateDamageDice="updateDamageDice">
       </bossDprInput>
+      <br>
       <div v-for="player in Object.keys(playerData)" :key="player">
-        DPS VS {{player}}
-        <dprDisplay
-          v-bind="dataObj[attack]"
-          :targetAC="playerData[player].playerAC">
-        </dprDisplay>
-        <hr/>
+        <div class="form-group row my-1 no-margin">
+          <b-btn v-b-toggle="'collapse-dpr-' + player" variant="secondary" class="btn btn-outline btn-sm col-lg">{{player}}</b-btn>
+        </div>
+        <b-collapse :visible="true" :id="'collapse-dpr-' + player">
+          <dprDisplay
+            v-bind.sync="dataObj[attack]"
+            :targetAC="playerData[player].playerAC">
+          </dprDisplay>
+        </b-collapse>
+        <br>
       </div>
     </div>
   </div>
@@ -77,31 +77,33 @@ export default {
     },
     updateDamageDice(event) {
       // wip
-      console.log(event)
+      console.log('i ran')
       var diceKey = Object.keys(event.dice)[0]
       this.dataObj[event.attackName].inputs[diceKey].damageCount = event.dice[diceKey].damageCount
     },
-    updateBonusDice(event) {
-      var diceKey = Object.keys(event)[0]
-      this.inputs[diceKey].bonusCount = event[diceKey].bonusCount
-    },
-    updateReductionDice(event) {
-      var diceKey = Object.keys(event)[0]
-      this.inputs[diceKey].reductionCount = event[diceKey].reductionCount
-    },
-    updateCriticalDice(event) {
-      var diceKey = Object.keys(event)[0]
-      this.inputs[diceKey].criticalCount = event[diceKey].criticalCount
-    },
+    // updateBonusDice(event) {
+    //   var diceKey = Object.keys(event)[0]
+    //   this.inputs[diceKey].bonusCount = event[diceKey].bonusCount
+    // },
+    // updateReductionDice(event) {
+    //   var diceKey = Object.keys(event)[0]
+    //   this.inputs[diceKey].reductionCount = event[diceKey].reductionCount
+    // },
+    // updateCriticalDice(event) {
+    //   var diceKey = Object.keys(event)[0]
+    //   this.inputs[diceKey].criticalCount = event[diceKey].criticalCount
+    // },
     updateBossAC(event) {
       this.inputs.bossAC = event
       this.$emit('updateBossAC', this.inputs.bossAC)
     },
     addAttack() {
+      if (this.attackName == null || !this.attackName.trim()) {
+        return // skip this
+      }
+
       if (!(this.attackList.includes(this.attackName))) {
         this.attackList.push(this.attackName)
-        // this.dataObj = $.extend({}, this.dataObj)
-        // this.dataObj[this.attackName] = JSON.parse(JSON.stringify({ inputs: { ...this.inputs } }))
         this.$set(this.dataObj, this.attackName, JSON.parse(JSON.stringify({ inputs: { ...this.inputs } })))
       } else {
         console.log('if ur reading this u did the same attack name twice nerd.')
@@ -111,8 +113,8 @@ export default {
   data: () => ({
     dataObj: {},
     inputs: {
-      bossAC: '',
-      bossHP: '',
+      bossAC: 16,
+      bossHP: 500,
       attackbonus: 7,
       numberofattacks: 1,
       selectedExtras: [],
@@ -124,7 +126,6 @@ export default {
       d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
       flatdamage: '',
     },
-    attackName: 'DoOm bLaDE SmiTE',
     attackList: []
   })
 }

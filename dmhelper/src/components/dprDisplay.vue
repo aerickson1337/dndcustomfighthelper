@@ -1,33 +1,16 @@
 <template>
   <div>
-    <div class="row">
-      <div class="col">Chance to Hit:</div>
-      <div class="col">{{ roundToPercent(chanceToHit) }}%</div>
-    </div>
-    <!-- <div class="row">
-      <div class="col">Chance to Save:</div>
-      <div class="col">{{ roundToPercent(chanceToSave) }}%</div>
-    </div>
-    <div class="row">
-      <div class="col">Chance for target to Save:</div>
-      <div class="col">{{ roundToPercent(targetChanceToFail) }}%</div>
-    </div> -->
-    <div class="row">
-      <div class="col">Chance to Hit with Advantage:</div>
-      <div class="col">{{ roundToPercent(chanceToHitAdvantage) }}%</div>
-    </div>
-    <div class="row">
-      <div class="col">Chance to hit with Disadvantage:</div>
-      <div class="col">{{ roundToPercent(chanceToHitDisadvantage) }}%</div>
-    </div>
-    <div class="row">
-      <div class="col">Base DPR:</div>
-      <div class="col">{{ DPR.toFixed(2) }}</div>
-    </div>
-    <div class="row">
-      <div class="col">Modified DPR:</div>
-      <div class="col">{{ buffToggles.toFixed(2) }}</div>
-    </div>
+    <b-table striped :items="tableItems">
+      <template #cell(Hit)="data">
+        {{ data.item.Hit }}%
+      </template>
+      <template #cell(HitA)="data">
+        {{ data.item.HitA }}%
+      </template>
+      <template #cell(HitD)="data">
+        {{ data.item.HitD }}%
+      </template>
+    </b-table>
   </div>
 </template>
 <script>
@@ -47,6 +30,15 @@ export default {
   components: {
   },
   computed: {
+    tableItems() {
+      return [{
+        Hit: this.roundToPercent(this.chanceToHit),
+        HitA: this.roundToPercent(this.chanceToHitAdvantage),
+        HitD: this.roundToPercent(this.chanceToHitDisadvantage),
+        BaseDPR: this.DPR.toFixed(2),
+        BuffedDPR: this.buffToggles.toFixed(2)
+      }]
+    },
     chanceToHit() {
       return dprFunctions.hit(this.targetAC, this.inputs.attackbonus)
     },
