@@ -1,34 +1,36 @@
 <template>
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-lg-6 w-50">
-        <div class="form-group row my-1 no-margin">
-          <b-input-group>
-            <b-input-group-prepend>
-              <span class="input-group-text">Player Count</span>
-            </b-input-group-prepend>
-            <b-form-input
-              v-model.number="playerCount"
-              id="playerCount"
-              size="xs"
-              class="ACABinput input-override">
-            </b-form-input>
-          </b-input-group>
+  <div class="root">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-6 w-50">
+          <div class="form-group row my-1 no-margin">
+            <b-input-group>
+              <b-input-group-prepend>
+                <span class="input-group-text">Player Count</span>
+              </b-input-group-prepend>
+              <b-form-input
+                v-model.number="playerCount"
+                id="playerCount"
+                size="xs"
+                class="ACABinput input-override">
+              </b-form-input>
+            </b-input-group>
+          </div>
+          <div v-for="player in playerList" :key="player">
+            <playerDprCalculations
+              :player="player"
+              :bossAC="bossAC"
+              @updatePlayerAC="updatePlayerAC">
+            </playerDprCalculations>
+            <hr class="line-breaker"/>
+          </div>
         </div>
-        <div v-for="player in playerList" :key="player">
-          <playerDprCalculations
-            :player="player"
-            :bossAC="bossAC"
-            @updatePlayerAC="updatePlayerAC">
-          </playerDprCalculations>
-          <hr class="line-breaker"/>
+        <div class="col-lg-6 w-50">
+          <bossDprCalculations
+            :playerData="playerData"
+            @updateBossStat="updateBossStat">
+          </bossDprCalculations>
         </div>
-      </div>
-      <div class="col-lg-6 w-50">
-        <bossDprCalculations
-          :playerData="playerData"
-          @updateBossAC="updateBossAC">
-        </bossDprCalculations>
       </div>
     </div>
   </div>
@@ -45,7 +47,7 @@ export default {
     playerList() {
       var playerList = []
       for (var i = 0; i < this.playerCount; i++) {
-        playerList.push('player' + i)
+        playerList.push('Player_' + i)
       }
       return playerList
     },
@@ -54,8 +56,8 @@ export default {
     }
   },
   methods: {
-    updateBossAC(event) {
-      this.bossAC = event
+    updateBossStat(event) {
+      this[event.refKey] = event.newVal
     },
     updatePlayerAC(event) {
       this.$set(this.playerData, event.playerName, { playerAC: event.playerAC })
@@ -99,5 +101,30 @@ export default {
 }
 .input-group-text {
   color: #FFFFFF;
+}
+[class^="swal2"] {
+  color: white;
+}
+[class^="swal2"] .swal2-title {
+  color: white
+}
+.closeButton {
+  color: black;
+  width: 30px;
+  height: 30px;
+}
+.closeOutline {
+  background: #303030;
+  width: 27px;
+  height: 27px;
+  border-radius: 2px;
+  box-shadow: 2px 2px 1px 1px black;
+}
+.closeOutline:hover {
+  background: #252525;
+  width: 27px;
+  height: 27px;
+  border-radius: 2px;
+  box-shadow: 2px 2px 1px 1px black;
 }
 </style>

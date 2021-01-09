@@ -2,8 +2,8 @@
   <div>
     <div class="form-group row my-1 no-margin">
       <b-input-group>
-        <b-button variant="success" @click="addAttack()">Add Attack</b-button>
-        <b-input v-model="attackName" class="input-override" placeholder="e.g. MLG DoOm BlAdE SmiTe"></b-input>
+        <b-button variant="info" @click="addAttack()">Add Attack</b-button>
+        <b-input v-model="attackName" @keyup.enter="addAttack()" class="input-override" placeholder="e.g. MLG DoOm BlAdE SmiTe"></b-input>
       </b-input-group>
     </div>
     <div class="form-group row my-1 no-margin">
@@ -16,7 +16,8 @@
           id="boss-ac"
           size="xs"
           class="ACABinput input-override"
-          placeholder="Boss AC">
+          placeholder="Boss AC"
+          @change="updateBossStat('bossAC', $event)">
         </b-form-input>
         <b-input-group-prepend>
           <span class="input-group-text">HP</span>
@@ -26,35 +27,47 @@
           id="boss-hp"
           size="xs"
           class="ACABinput input-override"
-          placeholder="Boss HP">
+          placeholder="Boss HP"
+          @change="updateBossStat('bossHP', $event)">
         </b-form-input>
       </b-input-group>
     </div>
     <!-- need distinct inputs for each attack -->
     <div v-for="attack in attackList" :key="attack">
-      <bossDprInput
-        :attackName="attack"
-        v-bind.sync="dataObj[attack]"
-        @updateDamageDice="updateDamageDice">
-      </bossDprInput>
-      <br>
-      <div v-for="player in Object.keys(playerData)" :key="player">
-        <div class="form-group row my-1 no-margin">
-          <b-btn v-b-toggle="'collapse-dpr-' + player" variant="secondary" class="btn btn-outline btn-sm col-lg">{{player}}</b-btn>
+      <div v-if="Object.keys(bossData).length">
+        <div class="d-flex justify-content-left align-items-center">
+          <h3 class="mr-2">{{attack}}</h3>
+          <button type="button" class="close mb-2" aria-label="Close" @click="removeAttack(attack)">
+            <span aria-hidden="true" style="font-size: 40px;">&times;</span>
+          </button>
         </div>
-        <b-collapse :visible="true" :id="'collapse-dpr-' + player">
-          <dprDisplay
-            v-bind.sync="dataObj[attack]"
-            :targetAC="playerData[player].playerAC">
-          </dprDisplay>
-        </b-collapse>
+        <bossDprInput
+          :dataKey="attack"
+          :renderAdvanced="false"
+          v-bind.sync="bossData[attack]"
+          @updateDiceCounts="updateDiceCounts"
+          @updateSingleValue="updateSingleValue">
+          <template v-slot:default></template>
+        </bossDprInput>
         <br>
+        <div v-for="player in Object.keys(playerData)" :key="player">
+          <div class="form-group row my-1 no-margin">
+            <b-btn v-b-toggle="'collapse-dpr-' + player" variant="secondary" class="btn btn-outline btn-sm col-lg">{{player}}</b-btn>
+          </div>
+          <b-collapse :visible="true" :id="'collapse-dpr-' + player">
+            <dprDisplay
+              v-bind.sync="bossData[attack]"
+              :targetAC="playerData[player].playerAC">
+            </dprDisplay>
+          </b-collapse>
+          <br>
+        </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-import bossDprInput from '@/components/bossDprInput.vue'
+import bossDprInput from '@/components/playerDprInput.vue'
 import dprDisplay from '@/components/dprDisplay.vue'
 export default {
   props: {
@@ -75,58 +88,61 @@ export default {
     roundToPercent(num) {
       return Math.round(num * 100)
     },
-    updateDamageDice(event) {
-      // wip
-      console.log('i ran')
-      var diceKey = Object.keys(event.dice)[0]
-      this.dataObj[event.attackName].inputs[diceKey].damageCount = event.dice[diceKey].damageCount
+    updateBossStat(bossStatName, event) {
+      this.inputs[bossStatName] = parseInt(event)
+      this.$emit('updateBossStat', { refKey: bossStatName, newVal: this.inputs[bossStatName] })
     },
-    // updateBonusDice(event) {
-    //   var diceKey = Object.keys(event)[0]
-    //   this.inputs[diceKey].bonusCount = event[diceKey].bonusCount
-    // },
-    // updateReductionDice(event) {
-    //   var diceKey = Object.keys(event)[0]
-    //   this.inputs[diceKey].reductionCount = event[diceKey].reductionCount
-    // },
-    // updateCriticalDice(event) {
-    //   var diceKey = Object.keys(event)[0]
-    //   this.inputs[diceKey].criticalCount = event[diceKey].criticalCount
-    // },
-    updateBossAC(event) {
-      this.inputs.bossAC = event
-      this.$emit('updateBossAC', this.inputs.bossAC)
+    removeAttack(attack) {
+      this.attackList = [...this.attackList.filter(item => item !== attack)]
+      this.$delete(this.bossData, attack)
     },
     addAttack() {
       if (this.attackName == null || !this.attackName.trim()) {
+        this.$swal({
+          title: 'Empty Attack Name!',
+          text: 'Bro you really out here just clicking buttons?',
+          icon: 'warning',
+          confirmButtonText: 'Whoops'
+        })
         return // skip this
       }
 
       if (!(this.attackList.includes(this.attackName))) {
         this.attackList.push(this.attackName)
-        this.$set(this.dataObj, this.attackName, JSON.parse(JSON.stringify({ inputs: { ...this.inputs } })))
+        this.$set(this.bossData, this.attackName, JSON.parse(JSON.stringify({ inputs: { ...this.inputs } })))
       } else {
         console.log('if ur reading this u did the same attack name twice nerd.')
+      }
+      this.attackName = ''
+    },
+    updateDiceCounts(event) {
+      this.bossData[event.refKey].inputs[event.refDiceSize][event.refDamageType] = event.dice[event.refDiceSize][event.refDamageType]
+    },
+    updateSingleValue(event) {
+      var keyName = Object.keys(event)[1]
+      if (!(Array.isArray(event[keyName]))) {
+        this.bossData[event.refKey].inputs[keyName] = parseInt(event[keyName])
       }
     }
   },
   data: () => ({
-    dataObj: {},
+    bossData: {},
     inputs: {
-      bossAC: 16,
-      bossHP: 500,
-      attackbonus: 7,
-      numberofattacks: 1,
+      bossAC: '',
+      bossHP: '',
+      attackbonus: '',
+      flatdamage: '',
+      numberofattacks: '',
       selectedExtras: [],
       diceTypes: ['d4','d6','d8','d10','d12'],
       d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
       d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
       d8: { value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
       d10: { value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-      d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-      flatdamage: '',
+      d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 }
     },
-    attackList: []
+    attackList: [],
+    attackName: ''
   })
 }
 </script>

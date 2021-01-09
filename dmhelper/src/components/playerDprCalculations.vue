@@ -2,11 +2,36 @@
   <div>
     <playerDprInput
       v-bind.sync="playerData[player]"
-      :player="player"
-      @updateDamageDice="updateDamageDice"
-      @updateBonusDice="updateBonusDice"
-      @updateReductionDice="updateReductionDice"
-      @updateCriticalDice="updateCriticalDice">
+      :dataKey="player"
+      :renderAdvanced="true"
+      @updateDiceCounts="updateDiceCounts"
+      @updateSingleValue="updateSingleValue">
+      <template v-slot:default="slotProps">
+        <b-input-group-prepend>
+          <span class="input-group-text">AC</span>
+        </b-input-group-prepend>
+        <div>
+          <b-input
+            v-model.number="slotProps.acval" 
+            id="entity-ac"
+            size="xs"
+            class="ACABinput input-override"
+            placeholder="Entity AC"
+            @change="updateSingleValue({ac: $event})">
+          </b-input>
+        </div>
+        <b-input-group-prepend>
+          <span class="input-group-text">HP</span>
+        </b-input-group-prepend>
+        <b-input
+          v-model.number="slotProps.hpval"
+          id="entity-HP"
+          size="xs"
+          placeholder="Entity HP"
+          class="ACABinput input-override"
+          @change="updateSingleValue({hp: $event})">
+        </b-input>
+      </template>
     </playerDprInput>
     <dprDisplay
       v-bind.sync="playerData[player]"
@@ -37,24 +62,16 @@ export default {
     this.$set(this.playerData, this.player, JSON.parse(JSON.stringify({ inputs: { ...this.inputs } })))
   },
   methods: {
-    roundToPercent(num) {
-      return Math.round(num * 100)
+    updateDiceCounts(event) {
+      this.playerData[event.refKey].inputs[event.refDiceSize][event.refDamageType] = event.dice[event.refDiceSize][event.refDamageType]
     },
-    updateDamageDice(event) {
-      var diceKey = Object.keys(event)[0]
-      this.inputs[diceKey].damageCount = event[diceKey].damageCount
-    },
-    updateBonusDice(event) {
-      var diceKey = Object.keys(event)[0]
-      this.inputs[diceKey].bonusCount = event[diceKey].bonusCount
-    },
-    updateReductionDice(event) {
-      var diceKey = Object.keys(event)[0]
-      this.inputs[diceKey].reductionCount = event[diceKey].reductionCount
-    },
-    updateCriticalDice(event) {
-      var diceKey = Object.keys(event)[0]
-      this.inputs[diceKey].criticalCount = event[diceKey].criticalCount
+    updateSingleValue(event) {
+      var keyName = Object.keys(event)[1]
+      if (!(Array.isArray(event[keyName]))) {
+        this.playerData[this.player].inputs[keyName] = parseInt(event[keyName])
+      } else if (Array.isArray(event[keyName])) {
+        this.playerData[this.player].inputs[keyName] = event[keyName]
+      }
     }
   },
   watch: {
@@ -69,17 +86,18 @@ export default {
   data: () => ({
     playerData: {},
     inputs: {
-      acinput: 20,
+      ac: 20,
+      hp: 50,
       attackbonus: 7,
       numberofattacks: 1,
+      flatdamage: '',
       selectedExtras: [],
       diceTypes: ['d4','d6','d8','d10','d12'],
       d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
       d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
       d8: { value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
       d10: { value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-      d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-      flatdamage: ''
+      d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 }
     }
   })
 }

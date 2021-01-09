@@ -37,7 +37,7 @@
             :placeholder="'# of '+dice"
             :value="[dice].damageCount"
             maxlength="4"
-            @input="updateDamageDice(dice, $event)">
+            @input="updateDiceCounts(dice, $event, 'damageCount')">
           </b-form-input>
         </div>
         <b-input-group-prepend>
@@ -46,7 +46,6 @@
         <b-form-input id="flatDamage" class="diceinput input-override" placeholder="e.g. 5" v-model="flatdamage" :number="true"></b-form-input>
       </b-input-group>
     </div>
-
   </div>
 </template>
 <script>
@@ -75,21 +74,14 @@ export default {
     }
   },
   methods: {
-    updateDamageDice(dice, event) {
-      this[dice].damageCount = event
-      this.$emit('updateDamageDice', { attackName: this.attackName, dice: { [dice]: this[dice] } })
-    },
-    updateBonusDice(dice, event) {
-      this[dice].bonusCount = event
-      this.$emit('updateBonusDice', { [dice]: this[dice] })
-    },
-    updateReductionDice(dice, event) {
-      this[dice].reductionCount = event
-      this.$emit('updateReductionDice', { [dice]: this[dice] })
-    },
-    updateCriticalDice(dice, event) {
-      this[dice].CriticalCount = event
-      this.$emit('updateCriticalDice', { [dice]: this[dice] })
+    updateDiceCounts(diceSize, event, diceDamageType) {
+      this[diceSize][diceDamageType] = event
+      this.$emit('updateDiceCounts', {
+        refKey: this.attackName,
+        refDamageType: diceDamageType,
+        refDiceSize: diceSize,
+        dice: { [diceSize]: this[diceSize] } 
+      })
     }
   },
   data: () => ({

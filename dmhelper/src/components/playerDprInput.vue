@@ -2,25 +2,11 @@
   <div>
     <div class="form-group row my-1 no-margin">
       <b-input-group>
-        <b-input-group-prepend>
-          <span class="input-group-text">AC</span>
-        </b-input-group-prepend>
-        <b-input
-          v-model.number="acval" 
-          id="player-ac"
-          size="xs"
-          class="ACABinput input-override"
-          placeholder="Player AC">
-        </b-input>
-        <b-input-group-prepend>
-          <span class="input-group-text">HP</span>
-        </b-input-group-prepend>
-        <b-input
-          v-model.number="hpval"
-          id="player-HP"
-          size="xs"
-          class="ACABinput input-override">
-        </b-input>
+        <slot
+          name="default"
+          :acval="acval"
+          :hpval="hpval">
+        </slot>
         <b-input-group-prepend>
           <span class="input-group-text">Attack Bonus</span>
         </b-input-group-prepend>
@@ -29,7 +15,8 @@
           id="attack-bonus"
           size="xs"
           class="ACABinput input-override"
-          placeholder="e.g. 7">
+          placeholder="e.g. 7"
+          @change="updateSingleValue('attackbonus', $event)">
         </b-input>
         <b-input-group-prepend>
           <span class="input-group-text">Attacks</span>
@@ -38,7 +25,8 @@
           v-model.number="numberofattacksval"
           id="number-of-attacks"
           class="col input-override"
-          placeholder="e.g. 1">
+          placeholder="e.g. 1"
+          @change="updateSingleValue('numberofattacks', $event)">
         </b-input>
       </b-input-group>
     </div>
@@ -54,19 +42,26 @@
             :placeholder="'# of '+dice"
             :value="[dice].damageCount"
             maxlength="4"
-            @input="updateDamageDice(dice, $event)">
+            @input="updateDiceCounts(dice, $event, 'damageCount')">
           </b-input>
         </div>
         <b-input-group-prepend>
           <span class="input-group-text">Flat</span>
         </b-input-group-prepend>
-        <b-form-input id="flatDamage" class="col input-override" placeholder="e.g. 5" v-model="flatdamage" :number="true"></b-form-input>
+        <b-form-input
+          id="flatDamage"
+          class="col input-override"
+          placeholder="e.g. 5"
+          v-model="flatdamage"
+          :number="true"
+          @change="updateSingleValue('flatdamage', $event)">
+        </b-form-input>
       </b-input-group>
     </div>
-    <div class="form-group row my-1 no-margin">
-      <b-btn v-b-toggle="'collapse-' + player" variant="secondary" class="btn btn-outline btn-sm col-lg">Advanced</b-btn>
+    <div class="form-group row my-1 no-margin hide-for-boss" v-if="renderAdvanced">
+      <b-btn v-b-toggle="'collapse-' + dataKey" variant="secondary" class="btn btn-outline btn-sm col-lg">Advanced</b-btn>
     </div>
-    <b-collapse :id="'collapse-' + player" class="col">
+    <b-collapse :id="'collapse-' + dataKey" class="col" v-if="renderAdvanced">
       <div class="form-group row my-1">
         <b-input-group>
           <b-input-group-prepend>
@@ -79,7 +74,7 @@
               :placeholder="'# of '+dice"
               :value="[dice].bonusCount"
               maxlength="4"
-              @input="updateBonusDice(dice, $event)">
+              @input="updateDiceCounts(dice, $event, 'bonusCount')">
             </b-form-input>
           </div>
         </b-input-group>
@@ -96,7 +91,7 @@
               :placeholder="'# of '+dice"
               :value="[dice].reductionCount"
               maxlength="4"
-              @input="updateReductionDice(dice, $event)">
+              @input="updateDiceCounts(dice, $event, 'reductionCount')">
             </b-form-input>
           </div>
         </b-input-group>
@@ -105,11 +100,12 @@
         <b-input-group>
           <b-form-group style="margin-bottom: 0px;">
             <b-form-checkbox-group
-              :id="'checkbox-group-1'+player"
+              :id="'checkbox-group-1'+dataKey"
               v-model="selectedExtras"
               :options="extraOptions"
-              :name="'extraOptions-1-'+player"
-            ></b-form-checkbox-group>
+              :name="'extraOptions-1-'+dataKey"
+              @change="updateSingleValue('selectedExtras', $event)">
+            </b-form-checkbox-group>
           </b-form-group>
         </b-input-group>
       </div>
@@ -125,7 +121,7 @@
               :placeholder="'# of '+dice"
               :value="[dice].criticalCount"
               maxlength="4"
-              @input="updateCriticalDice(dice, $event)">
+              @input="updateDiceCounts(dice, $event, 'criticalCount')">
             </b-form-input>
           </div>
         </b-input-group>
@@ -140,58 +136,46 @@ export default {
       type: Object,
       required: true
     },
-    player: {
+    dataKey: {
       type: String,
       required: true
+    },
+    renderAdvanced: {
+      type: Boolean
     }
   },
   watch: {
-    acval() {
-      this.$emit('update:acinput', this.acval)
-    },
-    attackbonusval() {
-      this.$emit('update:attackbonus', this.attackbonusval)
-    },
-    numberofattacksval() {
-      this.$emit('update:numberofattacks', this.numberofattacksval)
-    },
-    flatdamage() {
-      this.$emit('update:flatdamage', this.flatdamage)
-    },
-    selectedExtras() {
-      this.$emit('update:selectedExtras', this.selectedExtras)
-    }
+  },
+  created() {
+  },
+  computed: {
   },
   methods: {
-    updateDamageDice(dice, event) {
-      this[dice].damageCount = event
-      this.$emit('updateDamageDice', { [dice]: this[dice] })
+    updateDiceCounts(diceSize, event, diceDamageType) {
+      this[diceSize][diceDamageType] = event
+      this.$emit('updateDiceCounts', {
+        refKey: this.dataKey,
+        refDamageType: diceDamageType,
+        refDiceSize: diceSize,
+        dice: { [diceSize]: this[diceSize] } 
+      })
     },
-    updateBonusDice(dice, event) {
-      this[dice].bonusCount = event
-      this.$emit('updateBonusDice', { [dice]: this[dice] })
-    },
-    updateReductionDice(dice, event) {
-      this[dice].reductionCount = event
-      this.$emit('updateReductionDice', { [dice]: this[dice] })
-    },
-    updateCriticalDice(dice, event) {
-      this[dice].criticalCount = event
-      this.$emit('updateCriticalDice', { [dice]: this[dice] })
+    updateSingleValue(keyName, event) {
+      this.$emit('updateSingleValue', { refKey: this.dataKey, [keyName]: event })
     }
   },
   data: () => ({
-    acval: 16,
-    hpval: 50,
+    acval: '',
+    hpval: '',
     attackbonusval: '',
     numberofattacksval: '',
     flatdamage: '',
+    selectedExtras: [],
     d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
     d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
     d8: { value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
     d10: { value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
     d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-    selectedExtras: [],
     extraOptions: [
       { text: 'Elven Accuracy', value: 'elvenaccuracy' },
       { text: 'GWF', value: 'avgdamageGWF' },
@@ -206,5 +190,9 @@ export default {
 ::v-deep .custom-control-label {
   font-size: 12px;
   margin: auto;
+}
+
+::v-deep .boss {
+  visibility: hidden;
 }
 </style>

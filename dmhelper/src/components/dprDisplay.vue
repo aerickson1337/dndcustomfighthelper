@@ -136,10 +136,8 @@ export default {
       return minDamage
     },
     DPR() {
-      console.log(this.chanceToHit)
       var givenDPR = dprFunctions.damagePerRound(this.chanceToHit, dprFunctions.critchance(20), this.averageDamage)
-      console.log(givenDPR)
-      return givenDPR
+      return givenDPR * this.inputs.numberofattacks
     }
   },
   methods: {
