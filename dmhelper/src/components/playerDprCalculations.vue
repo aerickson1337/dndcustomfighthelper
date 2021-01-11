@@ -17,7 +17,7 @@
             size="xs"
             class="ACABinput input-override"
             placeholder="Entity AC"
-            @change="updateSingleValue({ac: $event})">
+            @change="updateSingleValue({refKey: player, ac: $event})">
           </b-input>
         </div>
         <b-input-group-prepend>
@@ -29,7 +29,7 @@
           size="xs"
           placeholder="Entity HP"
           class="ACABinput input-override"
-          @change="updateSingleValue({hp: $event})">
+          @change="updateSingleValue({refKey: player, hp: $event})">
         </b-input>
       </template>
     </playerDprInput>
@@ -78,8 +78,7 @@ export default {
     playerData: {
       deep: true,
       handler() {
-        var playerData = { playerName: this.player, playerAC: this.playerData[this.player].inputs.acinput }
-        this.$emit('updatePlayerAC', playerData)
+        this.$emit('sendPlayerData', this.playerData)
       }
     }
   },

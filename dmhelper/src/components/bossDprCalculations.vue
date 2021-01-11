@@ -12,7 +12,7 @@
           <span class="input-group-text">AC</span>
         </b-input-group-prepend>
         <b-form-input
-          v-model.number="inputs.bossAC"
+          v-model.number="bossAC"
           id="boss-ac"
           size="xs"
           class="ACABinput input-override"
@@ -23,7 +23,7 @@
           <span class="input-group-text">HP</span>
         </b-input-group-prepend>
         <b-form-input
-          v-model.number="inputs.bossHP"
+          v-model.number="bossHP"
           id="boss-hp"
           size="xs"
           class="ACABinput input-override"
@@ -52,15 +52,14 @@
         <br>
         <div v-for="player in Object.keys(playerData)" :key="player">
           <div class="form-group row my-1 no-margin">
-            <b-btn v-b-toggle="'collapse-dpr-' + player" variant="secondary" class="btn btn-outline btn-sm col-lg">{{player}}</b-btn>
+            <b-btn v-b-toggle="'collapse-dpr-' + player + '-' + attack" variant="secondary" class="btn btn-outline btn-sm col-lg">{{player}}</b-btn>
           </div>
-          <b-collapse :visible="true" :id="'collapse-dpr-' + player">
+          <b-collapse :visible="true" :id="'collapse-dpr-' + player + '-' + attack">
             <dprDisplay
               v-bind.sync="bossData[attack]"
-              :targetAC="playerData[player].playerAC">
+              :targetAC="playerData[player].ac">
             </dprDisplay>
           </b-collapse>
-          <br>
         </div>
       </div>
     </div>
@@ -83,14 +82,21 @@ export default {
   computed: {
   },
   watch: {
+    bossData: {
+      deep: true,
+      handler() {
+        this.$emit('sendBossData', this.bossData)
+      }
+    }
   },
   methods: {
     roundToPercent(num) {
       return Math.round(num * 100)
     },
     updateBossStat(bossStatName, event) {
-      this.inputs[bossStatName] = parseInt(event)
-      this.$emit('updateBossStat', { refKey: bossStatName, newVal: this.inputs[bossStatName] })
+      this[bossStatName] = parseInt(event)
+      this.$emit('updateBossStat', { refKey: bossStatName, newVal: this[bossStatName] })
+      this.$emit('sendBossData', this.bossData)
     },
     removeAttack(attack) {
       this.attackList = [...this.attackList.filter(item => item !== attack)]
@@ -127,9 +133,9 @@ export default {
   },
   data: () => ({
     bossData: {},
+    bossAC: '',
+    bossHP: '',
     inputs: {
-      bossAC: '',
-      bossHP: '',
       attackbonus: '',
       flatdamage: '',
       numberofattacks: '',
