@@ -52,12 +52,12 @@
         <br>
         <div v-for="player in Object.keys(playerData)" :key="player">
           <div class="form-group row my-1 no-margin">
-            <b-btn v-b-toggle="'collapse-dpr-' + player + '-' + attack" variant="secondary" class="btn btn-outline btn-sm col-lg">{{player}}</b-btn>
+            <b-btn v-b-toggle="'collapse-dpr-' + player + '-' + attack.replace(/\s+/g, '')" variant="secondary" class="btn btn-outline btn-sm col-lg">{{player}}</b-btn>
           </div>
-          <b-collapse :visible="true" :id="'collapse-dpr-' + player + '-' + attack">
+          <b-collapse :visible="true" :id="'collapse-dpr-' + player + '-' + attack.replace(/\s+/g, '')">
             <dprDisplay
               v-bind.sync="bossData[attack]"
-              :targetAC="playerData[player].ac">
+              :targetAC="playerData[player].inputs.ac">
             </dprDisplay>
           </b-collapse>
         </div>
