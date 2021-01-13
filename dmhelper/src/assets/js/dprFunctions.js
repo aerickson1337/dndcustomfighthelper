@@ -212,7 +212,39 @@ dprFunctions.damagePerRound = (hitchance, critthreshold, avgdamage) => {
   var C = critthreshold
   var DPH = avgdamage
   var DPC = DPH*2
-  return ((P - C) * DPH) + (C * DPC)
+  return (((P - C) * DPH) + (C * DPC))
+}
+
+dprFunctions.standardDeviation = (values) => {
+  if (values == null) {
+    return 0
+  }
+
+  var avg = mathMean(values)
+  
+  var squareDiffs = values.map((value) => {
+    var diff = value - avg
+    var sqrDiff = diff * diff
+    return sqrDiff
+  })
+  
+  var avgSquareDiff = mathMean(squareDiffs)
+
+  var stdDev = Math.sqrt(avgSquareDiff)
+  return stdDev
+}
+
+export function mathMean(data) {
+  if (data == null) {
+    return 0
+  }
+
+  var sum = data.reduce((sum, value) => {
+    return sum + value
+  }, 0)
+
+  var avg = sum / data.length
+  return avg
 }
 
 export default dprFunctions

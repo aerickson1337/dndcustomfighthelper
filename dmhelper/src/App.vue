@@ -1,58 +1,63 @@
 <template>
   <div class="root">
-    <b-tabs content-class="mt-3">
-      <b-tab title="DPR Form" active>
-        <div class="container-fluid">
-          <div class="row">
-            <div class="col-lg-6 w-50">
-              <div class="form-group row my-1 no-margin">
-                <b-input-group>
-                  <b-input-group-prepend>
-                    <span class="input-group-text">Player Count</span>
-                  </b-input-group-prepend>
-                  <b-form-input
-                    v-model.number="playerCount"
-                    id="playerCount"
-                    size="xs"
-                    class="ACABinput input-override">
-                  </b-form-input>
-                </b-input-group>
-              </div>
-              <div v-for="player in playerList" :key="player">
-                <playerDprCalculations
-                  :player="player"
-                  :bossAC="bossAC"
-                  @sendPlayerData="sendPlayerData">
-                </playerDprCalculations>
-                <hr class="line-breaker"/>
-              </div>
-            </div>
-            <div class="col-lg-6 w-50">
-              <bossDprCalculations
-                :playerData="playerData"
-                @sendBossData="sendBossData"
-                @updateBossStat="updateBossStat">
-              </bossDprCalculations>
-            </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col">
+          <nerdShit
+            :playerData="playerData"
+            :bossData="bossData"
+            :bossAC="bossAC"
+            :bossHP="bossHP">
+          </nerdShit>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-6 w-50">
+          <div class="form-group row my-1 no-margin">
+            <b-input-group>
+              <b-input-group-prepend>
+                <span class="input-group-text">Player Count</span>
+              </b-input-group-prepend>
+              <b-form-input
+                v-model.number="playerCount"
+                id="playerCount"
+                size="xs"
+                class="ACABinput input-override">
+              </b-form-input>
+            </b-input-group>
+          </div>
+          <div v-for="player in playerList" :key="player">
+            <playerDprCalculations
+              :player="player"
+              :bossAC="bossAC"
+              @sendPlayerData="sendPlayerData">
+            </playerDprCalculations>
+            <hr class="line-breaker"/>
           </div>
         </div>
-      </b-tab>
-      <b-tab title="nerd shit">
-        {{playerData}}
-        <br><br>
-        {{bossData}}
-      </b-tab>
-    </b-tabs>
+        <div class="col-lg-6 w-50">
+          <bossDprCalculations
+            :playerData="playerData"
+            @sendBossData="sendBossData"
+            @updateBossStat="updateBossStat">
+          </bossDprCalculations>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script>
 import playerDprCalculations from '@/components/playerDprCalculations.vue'
 import bossDprCalculations from '@/components/bossDprCalculations.vue'
+import nerdShit from '@/components/nerdshit.vue'
 // import * as d3 from "d3"
 export default {
   components: {
     playerDprCalculations,
-    bossDprCalculations
+    bossDprCalculations,
+    nerdShit
   },
   computed: {
     playerList() {
@@ -71,6 +76,8 @@ export default {
           this.$delete(this.playerData, playerName)
         }
       })
+    },
+    bossData() {
     }
   },
   methods: {
@@ -78,7 +85,7 @@ export default {
       this[event.refKey] = event.newVal
     },
     sendBossData(event) {
-      this.bossData = Object.assign({}, event, { bossAC: this.bossAC, bossHP: this.bossHP })
+      this.bossData = Object.assign({}, event)
     },
     sendPlayerData(event) {
       this.playerData = Object.assign({}, this.playerData, event)
