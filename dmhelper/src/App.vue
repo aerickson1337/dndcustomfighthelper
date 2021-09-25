@@ -3,12 +3,12 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col">
-          <nerdShit
+          <!-- <nerdShit
             :playerData="playerData"
             :bossData="bossData"
             :bossAC="bossAC"
             :bossHP="bossHP">
-          </nerdShit>
+          </nerdShit> -->
         </div>
       </div>
     </div>
@@ -46,18 +46,29 @@
         </div>
       </div>
     </div>
+    <!-- <b-button @click="setJsonData()">Dump JSON</b-button>
+    <b-button @click="loadJsonData()" class="ml-2">Load JSON</b-button>
+    <br>
+    <textarea v-model="jsonData" rows="8" cols="80"></textarea> -->
   </div>
 </template>
 <script>
 import playerDprCalculations from '@/components/playerDprCalculations.vue'
 import bossDprCalculations from '@/components/bossDprCalculations.vue'
-import nerdShit from '@/components/nerdshit.vue'
+// import nerdShit from '@/components/nerdshit.vue'
+import BossDprCalculations from './components/bossDprCalculations.vue'
+import Entity from '@/assets/js/entityClass.js'
 // import * as d3 from "d3"
 export default {
+  created() {
+    let entity = new Entity({name: 'dumbass', gold: 2000})
+    console.log(entity)
+  },
   components: {
     playerDprCalculations,
     bossDprCalculations,
-    nerdShit
+    // nerdShit,
+    BossDprCalculations
   },
   computed: {
     playerList() {
@@ -89,6 +100,19 @@ export default {
     },
     sendPlayerData(event) {
       this.playerData = Object.assign({}, this.playerData, event)
+    },
+    setJsonData() {
+      this.jsonData = JSON.stringify({ 
+        data: { 
+          playerData: this.playerData,
+          bossData: this.bossData
+        }
+      })
+    },
+    loadJsonData() {
+      var tempData = JSON.parse(this.jsonData)
+      this.playerData = tempData.data.playerData
+      this.bossData = tempData.data.bossData
     }
   },
   data: () => ({
@@ -97,6 +121,7 @@ export default {
     bossAC: 16,
     bossHP: 0,
     bossData: {},
+    jsonData: null
   })
 }
 </script>

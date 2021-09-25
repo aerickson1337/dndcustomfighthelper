@@ -11,7 +11,7 @@
       {{bossHP}}
       <br>  -->
       Party HP: {{partyHP}}
-      --- Party DPR: {{mathSum(arrPartyDPR).toFixed(2)}}
+      --- Party Round DPR: {{mathSum(arrPartyDPR).toFixed(2)}}
       --- Party Mean DPR: {{mathMean(arrPartyDPR).toFixed(2)}}
       --- Party DPR Standard Deviation: {{standardDeviation(arrPartyDPR).toFixed(2)}}
       <br>
@@ -26,6 +26,10 @@
 
       <br>
       Party Survival chance: {{ ((partyHP / bossDPR) / ((partyHP / bossDPR) + (bossHP / mathSum(arrPartyDPR))) * 100).toFixed(0) }}%
+      <br>
+      <div v-for="(log, index) in fightLog" :key="index">
+        <!-- {{log}} -->
+      </div>
     <!-- <b-table striped :items="tableItems">
       <template #cell(Hit)="data">
         {{ data.item.Hit }}%
@@ -40,8 +44,8 @@
   </div>
 </template>
 <script>
-import dprFunctions from '@/assets/js/dprFunctions.js'
-import { mathMean } from '@/assets/js/dprFunctions.js'
+import dmgLib from '@/assets/js/dmgLib.js'
+import { mathMean } from '@/assets/js/dmgLib.js'
 export default {
   props: {
     playerData: {
@@ -70,15 +74,15 @@ export default {
     arrPartyDPR() {
       var partyDPR = []
       Object.keys(this.playerData).forEach(player => {
-        var hitChance = dprFunctions.hit(this.bossAC, this.playerData[player].inputs.attackbonus)
-        var critThreshold = dprFunctions.critchance(20)
-        var averageDamage = (dprFunctions.avgdamage(this.playerData[player].inputs.d4.value, this.playerData[player].inputs.d4.damageCount) + 
-                            dprFunctions.avgdamage(this.playerData[player].inputs.d6.value, this.playerData[player].inputs.d6.damageCount) + 
-                            dprFunctions.avgdamage(this.playerData[player].inputs.d8.value, this.playerData[player].inputs.d8.damageCount) + 
-                            dprFunctions.avgdamage(this.playerData[player].inputs.d10.value, this.playerData[player].inputs.d10.damageCount) + 
-                            dprFunctions.avgdamage(this.playerData[player].inputs.d12.value, this.playerData[player].inputs.d12.damageCount) +
+        var hitChance = dmgLib.hit(this.bossAC, this.playerData[player].inputs.attackbonus)
+        var critThreshold = dmgLib.critchance(20)
+        var averageDamage = (dmgLib.avgdamage(this.playerData[player].inputs.d4.value, this.playerData[player].inputs.d4.damageCount) + 
+                            dmgLib.avgdamage(this.playerData[player].inputs.d6.value, this.playerData[player].inputs.d6.damageCount) + 
+                            dmgLib.avgdamage(this.playerData[player].inputs.d8.value, this.playerData[player].inputs.d8.damageCount) + 
+                            dmgLib.avgdamage(this.playerData[player].inputs.d10.value, this.playerData[player].inputs.d10.damageCount) + 
+                            dmgLib.avgdamage(this.playerData[player].inputs.d12.value, this.playerData[player].inputs.d12.damageCount) +
                             this.playerData[player].inputs.flatdamage)
-        var dpr = (dprFunctions.damagePerRound(hitChance, critThreshold, averageDamage) * this.playerData[player].inputs.numberofattacks)
+        var dpr = (dmgLib.damagePerRound(hitChance, critThreshold, averageDamage) * this.playerData[player].inputs.numberofattacks)
         partyDPR.push(dpr)
       })
       return partyDPR
@@ -86,15 +90,15 @@ export default {
     arrBossDPR() {
       var bossDPR = []
       Object.keys(this.bossData).forEach(bossAttack => {
-        var hitChance = dprFunctions.hit(this.bossAC, this.bossData[bossAttack].inputs.attackbonus)
-        var critThreshold = dprFunctions.critchance(20)
-        var averageDamage = (dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d4.value, this.bossData[bossAttack].inputs.d4.damageCount) + 
-                            dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d6.value, this.bossData[bossAttack].inputs.d6.damageCount) + 
-                            dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d8.value, this.bossData[bossAttack].inputs.d8.damageCount) + 
-                            dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d10.value, this.bossData[bossAttack].inputs.d10.damageCount) + 
-                            dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d12.value, this.bossData[bossAttack].inputs.d12.damageCount) +
+        var hitChance = dmgLib.hit(this.bossAC, this.bossData[bossAttack].inputs.attackbonus)
+        var critThreshold = dmgLib.critchance(20)
+        var averageDamage = (dmgLib.avgdamage(this.bossData[bossAttack].inputs.d4.value, this.bossData[bossAttack].inputs.d4.damageCount) + 
+                            dmgLib.avgdamage(this.bossData[bossAttack].inputs.d6.value, this.bossData[bossAttack].inputs.d6.damageCount) + 
+                            dmgLib.avgdamage(this.bossData[bossAttack].inputs.d8.value, this.bossData[bossAttack].inputs.d8.damageCount) + 
+                            dmgLib.avgdamage(this.bossData[bossAttack].inputs.d10.value, this.bossData[bossAttack].inputs.d10.damageCount) + 
+                            dmgLib.avgdamage(this.bossData[bossAttack].inputs.d12.value, this.bossData[bossAttack].inputs.d12.damageCount) +
                             this.bossData[bossAttack].inputs.flatdamage)
-        var dpr = (dprFunctions.damagePerRound(hitChance, critThreshold, averageDamage) * this.bossData[bossAttack].inputs.numberofattacks)
+        var dpr = (dmgLib.damagePerRound(hitChance, critThreshold, averageDamage) * this.bossData[bossAttack].inputs.numberofattacks)
         bossDPR.push(dpr)
       })
       return bossDPR
@@ -102,15 +106,15 @@ export default {
     bossDPR() {
       var bossDPR = 0
       Object.keys(this.bossData).forEach(bossAttack => {
-        var hitChance = dprFunctions.hit(this.bossAC, this.bossData[bossAttack].inputs.attackbonus)
-        var critThreshold = dprFunctions.critchance(20)
-        var averageDamage = (dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d4.value, this.bossData[bossAttack].inputs.d4.damageCount) + 
-                            dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d6.value, this.bossData[bossAttack].inputs.d6.damageCount) + 
-                            dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d8.value, this.bossData[bossAttack].inputs.d8.damageCount) + 
-                            dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d10.value, this.bossData[bossAttack].inputs.d10.damageCount) + 
-                            dprFunctions.avgdamage(this.bossData[bossAttack].inputs.d12.value, this.bossData[bossAttack].inputs.d12.damageCount) +
+        var hitChance = dmgLib.hit(this.bossAC, this.bossData[bossAttack].inputs.attackbonus)
+        var critThreshold = dmgLib.critchance(20)
+        var averageDamage = (dmgLib.avgdamage(this.bossData[bossAttack].inputs.d4.value, this.bossData[bossAttack].inputs.d4.damageCount) + 
+                            dmgLib.avgdamage(this.bossData[bossAttack].inputs.d6.value, this.bossData[bossAttack].inputs.d6.damageCount) + 
+                            dmgLib.avgdamage(this.bossData[bossAttack].inputs.d8.value, this.bossData[bossAttack].inputs.d8.damageCount) + 
+                            dmgLib.avgdamage(this.bossData[bossAttack].inputs.d10.value, this.bossData[bossAttack].inputs.d10.damageCount) + 
+                            dmgLib.avgdamage(this.bossData[bossAttack].inputs.d12.value, this.bossData[bossAttack].inputs.d12.damageCount) +
                             this.bossData[bossAttack].inputs.flatdamage)
-        var dpr = (dprFunctions.damagePerRound(hitChance, critThreshold, averageDamage) * this.bossData[bossAttack].inputs.numberofattacks)
+        var dpr = (dmgLib.damagePerRound(hitChance, critThreshold, averageDamage) * this.bossData[bossAttack].inputs.numberofattacks)
         bossDPR += dpr
       })
       return bossDPR
@@ -125,11 +129,11 @@ export default {
       return Math.round(num * 100)
     },
     DPR(hitChance, critChance, averageDamage, numberOfAttacks) {
-      var givenDPR = dprFunctions.damagePerRound(hitChance, dprFunctions.critchance(critChance), averageDamage)
+      var givenDPR = dmgLib.damagePerRound(hitChance, dmgLib.critchance(critChance), averageDamage)
       return givenDPR * numberOfAttacks
     },
     standardDeviation(arrayToStdDev) {
-      return dprFunctions.standardDeviation(arrayToStdDev)
+      return dmgLib.standardDeviation(arrayToStdDev)
     },
     mathSum() {
       if (this.arrPartyDPR == null || this.arrPartyDPR.length === 0) {
@@ -139,6 +143,7 @@ export default {
       }
     },
     fightSimulation() {
+      this.fightLog = []
       // var bossHasLife = true
       // var playersHaveLife = true
       var playerDataCopy = JSON.parse(JSON.stringify(this.playerData))
@@ -160,17 +165,21 @@ export default {
         var attackedPlayer = alivePlayerIndexes[Math.floor(Math.random() * alivePlayerIndexes.length)]
         for (var i = 0; i < Object.keys(playerDataCopy).length; i++) {
           bossHP -= this.individualPlayerDPR(Object.keys(playerDataCopy)[i])
+          this.fightLog.push(Object.keys(playerDataCopy)[i] + ' attacked the boss for:' + this.individualPlayerDPR(Object.keys(playerDataCopy)[i]))
           // when we are on the bosses chosen player to attack we do the attack on that players turn to save compute cycles
           if (i === attackedPlayer) {
             playerDataCopy[Object.keys(playerDataCopy)[i]].inputs.hp -= this.bossMeanDPR
+            this.fightLog.push('The Boss attacked ' + Object.keys(playerDataCopy)[i] + ' for ' + this.bossMeanDPR)
             // if the player dies add them to the death array so they get removed from the attack pool next iteration
             if (playerDataCopy[Object.keys(playerDataCopy)[i]].inputs.hp <= 0) {
               playerDeaths.push(i)
+              this.fightLog.push(Object.keys(playerDataCopy)[i] + ' Died!')
             }
           }
         }
         // if the boss is below 0, the players won!
         if (bossHP <= 0) {
+          this.fightLog.push('The Boss was slain!')
           this.$swal({
             title: 'Players Won!',
             text: 'The Players were victorious. The Boss died on round: ' + j,
@@ -179,6 +188,7 @@ export default {
           })
           break
         } else if (playerDeaths.length === playerCount) { // if all the players are dead the boss won
+          this.fightLog.push('All the players died!')
           this.$swal({
             title: 'The Boss Won!',
             text: 'whosyourdaddy didn\'t work?!?! Players Died on round: ' + j,
@@ -188,25 +198,25 @@ export default {
           break
         }
       }
-      console.log('bosshp', bossHP)
       Object.keys(playerDataCopy).forEach(player => {
         console.log(player, playerDataCopy[player].inputs.hp)
       })
     },
     individualPlayerDPR(player) {
-      var hitChance = dprFunctions.hit(this.bossAC, this.playerData[player].inputs.attackbonus)
-      var critThreshold = dprFunctions.critchance(20)
-      var averageDamage = (dprFunctions.avgdamage(this.playerData[player].inputs.d4.value, this.playerData[player].inputs.d4.damageCount) + 
-                          dprFunctions.avgdamage(this.playerData[player].inputs.d6.value, this.playerData[player].inputs.d6.damageCount) + 
-                          dprFunctions.avgdamage(this.playerData[player].inputs.d8.value, this.playerData[player].inputs.d8.damageCount) + 
-                          dprFunctions.avgdamage(this.playerData[player].inputs.d10.value, this.playerData[player].inputs.d10.damageCount) + 
-                          dprFunctions.avgdamage(this.playerData[player].inputs.d12.value, this.playerData[player].inputs.d12.damageCount) +
+      var hitChance = dmgLib.hit(this.bossAC, this.playerData[player].inputs.attackbonus)
+      var critThreshold = dmgLib.critchance(20)
+      var averageDamage = (dmgLib.avgdamage(this.playerData[player].inputs.d4.value, this.playerData[player].inputs.d4.damageCount) + 
+                          dmgLib.avgdamage(this.playerData[player].inputs.d6.value, this.playerData[player].inputs.d6.damageCount) + 
+                          dmgLib.avgdamage(this.playerData[player].inputs.d8.value, this.playerData[player].inputs.d8.damageCount) + 
+                          dmgLib.avgdamage(this.playerData[player].inputs.d10.value, this.playerData[player].inputs.d10.damageCount) + 
+                          dmgLib.avgdamage(this.playerData[player].inputs.d12.value, this.playerData[player].inputs.d12.damageCount) +
                           this.playerData[player].inputs.flatdamage)
-      var dpr = (dprFunctions.damagePerRound(hitChance, critThreshold, averageDamage) * this.playerData[player].inputs.numberofattacks)
+      var dpr = (dmgLib.damagePerRound(hitChance, critThreshold, averageDamage) * this.playerData[player].inputs.numberofattacks)
       return dpr
     }
   },
   data: () => ({
+    fightLog: []
   })
 }
 </script>

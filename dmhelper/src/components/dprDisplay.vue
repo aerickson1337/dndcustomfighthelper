@@ -14,7 +14,7 @@
   </div>
 </template>
 <script>
-import dprFunctions from '@/assets/js/dprFunctions.js'
+import dmgLib from '@/assets/js/dmgLib.js'
 export default {
   props: {
     targetAC: {
@@ -40,103 +40,103 @@ export default {
       }]
     },
     chanceToHit() {
-      return dprFunctions.hit(this.targetAC, this.inputs.attackbonus)
+      return dmgLib.hit(this.targetAC, this.inputs.attackbonus)
     },
     chanceToSave() {
-      return dprFunctions.save(this.targetAC, this.inputs.attackbonus)
+      return dmgLib.save(this.targetAC, this.inputs.attackbonus)
     },
     targetChanceToFail() {
-      return dprFunctions.targetfailsave(this.targetAC, this.inputs.attackbonus)
+      return dmgLib.targetfailsave(this.targetAC, this.inputs.attackbonus)
     },
     chanceToHitAdvantage() {
-      return dprFunctions.advantage(dprFunctions.hit(this.targetAC, this.inputs.attackbonus))
+      return dmgLib.advantage(dmgLib.hit(this.targetAC, this.inputs.attackbonus))
     },
     chanceToHitDisadvantage() {
-      return dprFunctions.disadvantage(dprFunctions.hit(this.targetAC, this.inputs.attackbonus))
+      return dmgLib.disadvantage(dmgLib.hit(this.targetAC, this.inputs.attackbonus))
     },
     elvenAccuracy() {
-      return dprFunctions.elvenaccuracy(dprFunctions.hit(this.targetAC, this.inputs.attackbonus))
+      return dmgLib.elvenaccuracy(dmgLib.hit(this.targetAC, this.inputs.attackbonus))
     },
     halflingLucky() {
-      return dprFunctions.halflinglucky(dprFunctions.hit(this.targetAC, this.inputs.attackbonus))
+      return dmgLib.halflinglucky(dmgLib.hit(this.targetAC, this.inputs.attackbonus))
     },
     halflingLuckyAdvantage() {
-      return dprFunctions.halflingluckyadvantage(dprFunctions.hit(this.targetAC, this.inputs.attackbonus))
+      return dmgLib.halflingluckyadvantage(dmgLib.hit(this.targetAC, this.inputs.attackbonus))
     },
     halflingLuckyDisadvantage() {
-      return dprFunctions.halflingluckydisadvantage(dprFunctions.hit(this.targetAC, this.inputs.attackbonus))
+      return dmgLib.halflingluckydisadvantage(dmgLib.hit(this.targetAC, this.inputs.attackbonus))
     },
     bless() {
-      return dprFunctions.bless(this.targetAC, this.inputs.attackbonus)
+      return dmgLib.bless(this.targetAC, this.inputs.attackbonus)
     },
     buffToggles() {
       var avgDamage = this.averageDamage
       var allBonuses = this.generateBonusDiceArray(this.inputs.diceTypes)
-      var hitchance = dprFunctions.genericBBB(this.targetAC, this.inputs.attackbonus, allBonuses)
+      var hitchance = dmgLib.genericBBB(this.targetAC, this.inputs.attackbonus, allBonuses)
 
       hitchance = this.determineModifiedHitchance(hitchance)
       avgDamage = this.determineModifiedDamage(avgDamage)
 
-      var buffedDPR = dprFunctions.damagePerRound(hitchance, dprFunctions.critchance(20), avgDamage)
+      var buffedDPR = dmgLib.damagePerRound(hitchance, dmgLib.critchance(20), avgDamage)
       return buffedDPR * this.inputs.numberofattacks
     },
     averageDamage() {
-      var avgDamage = dprFunctions.avgdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dprFunctions.avgdamage(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dprFunctions.avgdamage(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dprFunctions.avgdamage(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dprFunctions.avgdamage(this.inputs.d12.value, this.inputs.d12.damageCount) +
+      var avgDamage = dmgLib.avgdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                      dmgLib.avgdamage(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                      dmgLib.avgdamage(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                      dmgLib.avgdamage(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                      dmgLib.avgdamage(this.inputs.d12.value, this.inputs.d12.damageCount) +
                       this.inputs.flatdamage
       return avgDamage
     },
     averageDamageGWF() {
-      var avgDamage = dprFunctions.avgdamageGWF(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dprFunctions.avgdamageGWF(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dprFunctions.avgdamageGWF(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dprFunctions.avgdamageGWF(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dprFunctions.avgdamageGWF(this.inputs.d12.value, this.inputs.d12.damageCount) +
+      var avgDamage = dmgLib.avgdamageGWF(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                      dmgLib.avgdamageGWF(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                      dmgLib.avgdamageGWF(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                      dmgLib.avgdamageGWF(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                      dmgLib.avgdamageGWF(this.inputs.d12.value, this.inputs.d12.damageCount) +
                       this.inputs.flatdamage
       return avgDamage
     },
     averageDamageEA() {
-      var avgDamage = dprFunctions.avgdamageEA(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dprFunctions.avgdamageEA(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dprFunctions.avgdamageEA(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dprFunctions.avgdamageEA(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dprFunctions.avgdamageEA(this.inputs.d12.value, this.inputs.d12.damageCount) +
+      var avgDamage = dmgLib.avgdamageEA(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                      dmgLib.avgdamageEA(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                      dmgLib.avgdamageEA(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                      dmgLib.avgdamageEA(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                      dmgLib.avgdamageEA(this.inputs.d12.value, this.inputs.d12.damageCount) +
                       this.inputs.flatdamage
       return avgDamage
     },
     averageDamageGWFEA() {
-      var avgDamage = dprFunctions.avgdamageGWFEA(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dprFunctions.avgdamageGWFEA(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dprFunctions.avgdamageGWFEA(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dprFunctions.avgdamageGWFEA(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dprFunctions.avgdamageGWFEA(this.inputs.d12.value, this.inputs.d12.damageCount) +
+      var avgDamage = dmgLib.avgdamageGWFEA(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                      dmgLib.avgdamageGWFEA(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                      dmgLib.avgdamageGWFEA(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                      dmgLib.avgdamageGWFEA(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                      dmgLib.avgdamageGWFEA(this.inputs.d12.value, this.inputs.d12.damageCount) +
                       this.inputs.flatdamage
 
       return avgDamage
     },
     maxDamage() {
-      var maxDamage = dprFunctions.maxdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dprFunctions.maxdamage(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dprFunctions.maxdamage(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dprFunctions.maxdamage(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dprFunctions.maxdamage(this.inputs.d12.value, this.inputs.d12.damageCount) +
+      var maxDamage = dmgLib.maxdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
+                      dmgLib.maxdamage(this.inputs.d6.value, this.inputs.d6.damageCount) + 
+                      dmgLib.maxdamage(this.inputs.d8.value, this.inputs.d8.damageCount) + 
+                      dmgLib.maxdamage(this.inputs.d10.value, this.inputs.d10.damageCount) + 
+                      dmgLib.maxdamage(this.inputs.d12.value, this.inputs.d12.damageCount) +
                       this.inputs.flatdamage
       return maxDamage
     },
     minDamage() {
-      var minDamage = dprFunctions.mindamage(this.inputs.d4.damageCount) + 
-                      dprFunctions.mindamage(this.inputs.d6.damageCount) + 
-                      dprFunctions.mindamage(this.inputs.d8.damageCount) + 
-                      dprFunctions.mindamage(this.inputs.d10.damageCount) + 
-                      dprFunctions.mindamage(this.inputs.d12.damageCount) +
+      var minDamage = dmgLib.mindamage(this.inputs.d4.damageCount) + 
+                      dmgLib.mindamage(this.inputs.d6.damageCount) + 
+                      dmgLib.mindamage(this.inputs.d8.damageCount) + 
+                      dmgLib.mindamage(this.inputs.d10.damageCount) + 
+                      dmgLib.mindamage(this.inputs.d12.damageCount) +
                       this.inputs.flatdamage
       return minDamage
     },
     DPR() {
-      var givenDPR = dprFunctions.damagePerRound(this.chanceToHit, dprFunctions.critchance(20), this.averageDamage)
+      var givenDPR = dmgLib.damagePerRound(this.chanceToHit, dmgLib.critchance(20), this.averageDamage)
       return givenDPR * this.inputs.numberofattacks
     }
   },
@@ -171,10 +171,10 @@ export default {
     },
     determineModifiedHitchance(hitchance) {
       if (this.inputs.selectedExtras.includes('elvenaccuracy')) {
-        hitchance = dprFunctions.elvenaccuracy(hitchance)
+        hitchance = dmgLib.elvenaccuracy(hitchance)
       }
       else if (this.inputs.selectedExtras.includes('halflinglucky')) {
-        hitchance = dprFunctions.halflinglucky(hitchance)
+        hitchance = dmgLib.halflinglucky(hitchance)
       }
 
       return hitchance
