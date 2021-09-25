@@ -180,8 +180,8 @@ export default {
       { text: 'Elven Accuracy', value: 'elvenaccuracy' },
       { text: 'GWF', value: 'avgdamageGWF' },
       { text: 'Elemental Adept', value: 'avgdamageEA' },
-      { text: 'GWM Crit Bonus', value: 'GWM' },
-      { text: 'Lucky (Halfling)', value: 'halflinglucky' }
+      { text: 'Lucky (Halfling)', value: 'halflinglucky' },
+      { text: 'GWM Crit Bonus', value: 'GWM', disabled: true },
     ]
   })
 }

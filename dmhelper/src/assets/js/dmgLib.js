@@ -81,7 +81,11 @@ dmgLib.genericBBB = (ac, hitbonus, fullset) => {
   var cthwb = bonusarray.map(BBBbonus => { 
     return ((1 / bonusarray.length) * dmgLib.hit(ac, hitbonus+BBBbonus)) 
   })
-  return cthwb.reduce((a, b) => a + b, 0) // sum chances, return hit chance
+  var hitchance = cthwb.reduce((a, b) => a + b, 0) // sum chances, return hit chance
+
+  // handle hit bonuses going nuts
+  if (hitchance > 1) return 1
+  return hitchance
 }
 
 dmgLib.avgdamage = (dicesize, numdice) => {
