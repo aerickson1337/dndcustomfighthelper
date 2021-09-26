@@ -64,7 +64,7 @@ dmgLib.genericBBB = (ac, hitbonus, fullset) => {
   // var bless = [1,2,3,4]
   // var bardic = [1,2,3,4,5,6]
   // var bane = [-1,-2,-3,-4]
-  // var fullset = [bless, bardic, bane]
+  // var fullset = [blessArr, bardicArr, baneArr]
 
   var min = 0
   var max = 0

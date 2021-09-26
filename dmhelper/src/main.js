@@ -1,6 +1,7 @@
 import '@babel/polyfill'
 import 'mutationobserver-shim'
 import Vue from 'vue'
+import store from '@/store/index.js'
 import './plugins/bootstrap-vue'
 import { IconsPlugin } from 'bootstrap-vue'
 import "bootswatch/dist/darkly/bootstrap.min.css";
@@ -20,4 +21,5 @@ Vue.config.productionTip = false
 
 new Vue({
   render: h => h(App),
+  store
 }).$mount('#app')

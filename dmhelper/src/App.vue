@@ -3,6 +3,13 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col">
+          <!-- {{entity.whoami()}}
+          <br>
+          avg dmg: {{entity.average_damage()}}
+          <br>
+          unbuffed dpr: {{entity.average_dpr(17, false)}}
+          <br>
+          buffed dpr: {{entity.average_dpr(17, true, 'hit_chance_with_features')}} -->
           <!-- <nerdShit
             :playerData="playerData"
             :bossData="bossData"
@@ -15,6 +22,17 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-lg-6 w-50">
+          <div>
+            <div v-for="(entity, index) in $store.state.entities" :key="index">
+              {{entity}}
+            <entityForm
+              :entity="entity"
+              :index="index"
+              :bossAC="bossAC"
+              @sendPlayerData="sendPlayerData">
+            </entityForm>
+            </div>
+          </div>
           <div class="form-group row my-1 no-margin">
             <b-input-group>
               <b-input-group-prepend>
@@ -28,14 +46,14 @@
               </b-form-input>
             </b-input-group>
           </div>
-          <div v-for="player in playerList" :key="player">
+          <!-- <div v-for="player in playerList" :key="player">
             <playerDprCalculations
               :player="player"
               :bossAC="bossAC"
               @sendPlayerData="sendPlayerData">
             </playerDprCalculations>
             <hr class="line-breaker"/>
-          </div>
+          </div> -->
         </div>
         <div class="col-lg-6 w-50">
           <bossDprCalculations
@@ -53,22 +71,20 @@
   </div>
 </template>
 <script>
-import playerDprCalculations from '@/components/playerDprCalculations.vue'
+// import playerDprCalculations from '@/components/playerDprCalculations.vue'
 import bossDprCalculations from '@/components/bossDprCalculations.vue'
 // import nerdShit from '@/components/nerdshit.vue'
 import BossDprCalculations from './components/bossDprCalculations.vue'
-import Entity from '@/assets/js/entityClass.js'
+import entityForm from '@/components/entity/entityForm.vue'
+
 // import * as d3 from "d3"
 export default {
-  created() {
-    let entity = new Entity({name: 'dumbass', gold: 2000})
-    console.log(entity)
-  },
   components: {
-    playerDprCalculations,
+    // playerDprCalculations,
     bossDprCalculations,
     // nerdShit,
-    BossDprCalculations
+    BossDprCalculations,
+    entityForm
   },
   computed: {
     playerList() {
@@ -81,7 +97,6 @@ export default {
   },
   watch: {
     playerList() {
-      console.log('changed!')
       Object.keys(this.playerData).forEach(playerName => {
         if (!(this.playerList.includes(playerName))) {
           this.$delete(this.playerData, playerName)
@@ -99,6 +114,7 @@ export default {
       this.bossData = Object.assign({}, event)
     },
     sendPlayerData(event) {
+      this.entity.dice = event.Player_0.inputs.dice
       this.playerData = Object.assign({}, this.playerData, event)
     },
     setJsonData() {
@@ -116,8 +132,6 @@ export default {
     }
   },
   data: () => ({
-    playerCount: 1,
-    playerData: {},
     bossAC: 16,
     bossHP: 0,
     bossData: {},

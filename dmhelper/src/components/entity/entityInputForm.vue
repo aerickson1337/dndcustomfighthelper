@@ -1,48 +1,65 @@
 <template>
   <div>
+     {{index}} {{armor_class}}
     <div class="form-group row my-1 no-margin">
       <b-input-group>
-        <slot
-          name="default"
-          :acval="acval"
-          :hpval="hpval">
-        </slot>
+        <b-input-group-prepend>
+          <span class="input-group-text">AC</span>
+        </b-input-group-prepend>
+        <div>
+          <b-input
+            v-model.number="armor_class"
+            id="entity-ac"
+            size="xs"
+            class="ACABinput input-override"
+            placeholder="Entity AC"
+            @input="$store.commit('updateEntitesKeyValue', { key: 'armor_class', value: $event, entityIndex: index })">
+          </b-input>
+        </div>
+        <b-input-group-prepend>
+          <span class="input-group-text">HP</span>
+        </b-input-group-prepend>
+        <b-input
+          v-model.number="hit_points"
+          id="entity-HP"
+          size="xs"
+          placeholder="Entity HP"
+          class="ACABinput input-override"
+          @input="$store.commit('updateEntitesKeyValue', { key: 'hit_points', value: $event, entityIndex: index })">
+        </b-input>
         <b-input-group-prepend>
           <span class="input-group-text">Attack Bonus</span>
         </b-input-group-prepend>
         <b-input
-          v-model.number="attackbonusval"
+          v-model.number="attack_bonus"
           id="attack-bonus"
           size="xs"
           class="ACABinput input-override"
           placeholder="e.g. 7"
-          @change="updateSingleValue('attackbonus', $event)">
+          @input="$store.commit('updateEntitesKeyValue', { key: 'attack_bonus', value: $event, entityIndex: index })">
         </b-input>
-        <b-input-group-prepend>
-          <span class="input-group-text">Attacks</span>
-        </b-input-group-prepend>
-        <b-input
-          v-model.number="numberofattacksval"
-          id="number-of-attacks"
-          class="col input-override"
-          placeholder="e.g. 1"
-          @change="updateSingleValue('numberofattacks', $event)">
-        </b-input>
-      </b-input-group>
-    </div>
-    <div class="form-group row my-1 no-margin">
+        </b-input-group>
       <b-input-group>
         <b-input-group-prepend>
           <span class="input-group-text">Damage Dice</span>
         </b-input-group-prepend>
-        <div v-for="(dice, index) in inputs.dice" :key="dice.name" class="col-xs">
+        <div v-for="(dice, diceIndex) in entity.dice" :key="dice.name" class="col-xs">
           <b-input
             :id="dice.name"
             class="diceinput input-override"
             :placeholder="'# of '+dice.name"
-            v-model="[dice.name].damageCount"
+            v-model.number="[dice.name].damageCount"
             maxlength="4"
-            @input="updateDiceCounts(dice.name, $event, 'damageCount', index)">
+            @input="$store.commit('updateEntitesDiceKeyValue', 
+                { 
+                    key: 'attack_bonus',
+                    value: $event,
+                    entityIndex: index,
+                    diceType: 'damageCount',
+                    diceIndex: diceIndex
+                }
+            )"
+          >
           </b-input>
         </div>
         <b-input-group-prepend>
@@ -52,7 +69,7 @@
           id="flatDamage"
           class="col input-override"
           placeholder="e.g. 5"
-          v-model="flatdamage"
+          v-model.number="flatdamage"
           :number="true"
           @change="updateSingleValue('flatdamage', $event)">
         </b-form-input>
@@ -67,14 +84,14 @@
           <b-input-group-prepend>
             <span class="input-group-text">Bless, bardic, etc</span>
           </b-input-group-prepend>
-          <div v-for="(dice, index) in inputs.dice" :key="dice.name" class="col-xs" id="bonustohitdice">
+          <div v-for="(dice, diceIndex) in entity.dice" :key="dice.name" class="col-xs" id="bonustohitdice">
             <b-form-input
               :id="dice.name"
               class="diceinput input-override"
               :placeholder="'# of '+dice.name"
-              :value="[dice.name].bonusCount"
+              v-model.number="[dice.name].bonusCount"
               maxlength="4"
-              @input="updateDiceCounts(dice.name, $event, 'bonusCount', index)">
+              @input="updateDiceCounts(dice.name, $event, 'bonusCount', diceIndex)">
             </b-form-input>
           </div>
         </b-input-group>
@@ -84,14 +101,14 @@
           <b-input-group-prepend>
             <span class="input-group-text">Bane, Synaptic Static, etc</span>
           </b-input-group-prepend>
-         <div v-for="(dice, index) in inputs.dice" :key="dice.name" class="col-xs" id="reductiontohitdice">
+         <div v-for="(dice, diceIndex) in entity.dice" :key="dice.name" class="col-xs" id="reductiontohitdice">
             <b-form-input
               :id="dice.name"
               class="diceinput input-override"
               :placeholder="'# of '+dice.name"
               :value="[dice.name].reductionCount"
               maxlength="4"
-              @input="updateDiceCounts(dice.name, $event, 'reductionCount', index)">
+              @input="updateDiceCounts(dice.name, $event, 'reductionCount', diceIndex)">
             </b-form-input>
           </div>
         </b-input-group>
@@ -114,14 +131,14 @@
           <b-input-group-prepend>
             <span class="input-group-text">Crit Bonuses</span>
           </b-input-group-prepend>
-         <div v-for="(dice, index) in inputs.dice" :key="dice.name" class="col-xs" id="criticaldice">
+         <div v-for="(dice, diceIndex) in entity.dice" :key="dice.name" class="col-xs" id="criticaldice">
             <b-form-input
               :id="dice.name"
               class="diceinput input-override"
               :placeholder="'# of '+dice.name"
               :value="[dice.name].criticalCount"
               maxlength="4"
-              @input="updateDiceCounts(dice.name, $event, 'criticalCount', index)">
+              @input="updateDiceCounts(dice.name, $event, 'criticalCount', diceIndex)">
             </b-form-input>
           </div>
         </b-input-group>
@@ -130,15 +147,17 @@
   </div>
 </template>
 <script>
+// import {mapState} from 'vuex'
+
 export default {
   props: {
-    inputs: {
+    entity: {
       type: Object,
       required: true
     },
-    dataKey: {
-      type: String,
-      required: true
+    index: {
+        type: Number,
+        required: true
     },
     renderAdvanced: {
       type: Boolean
@@ -148,41 +167,15 @@ export default {
   },
   created() {
   },
-  computed: {
-  },
   methods: {
-    updateDiceCounts(diceSize, event, diceDamageType, index=0) {
-      this.$emit('updateDiceCounts', {
-        refKey: this.dataKey,
-        refDamageType: diceDamageType,
-        refDiceSize: diceSize,
-        dice: event,
-        index: index
-      })
-    },
-    updateSingleValue(keyName, event) {
-      this.$emit('updateSingleValue', { refKey: this.dataKey, [keyName]: event })
-    }
   },
   data: () => ({
-    acval: '',
-    hpval: '',
-    attackbonusval: '',
-    numberofattacksval: '',
-    flatdamage: '',
-    selectedExtras: [],
-    d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-    d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-    d8: { value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-    d10: { value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-    d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-    extraOptions: [
-      { text: 'Elven Accuracy', value: 'elvenaccuracy' },
-      { text: 'GWF', value: 'avgdamageGWF' },
-      { text: 'Elemental Adept', value: 'avgdamageEA' },
-      { text: 'Lucky (Halfling)', value: 'halflinglucky' },
-      { text: 'GWM Crit Bonus', value: 'GWM', disabled: true },
-    ]
+    armor_class: this.$store.state.entities[this.index].armor_class,
+    hit_points: this.$store.state.entities[this.index].hit_points,
+    attack_bonus: this.$store.state.entities[this.index].attack_bonus,
+    number_of_attacks: this.$store.state.entities[this.index].number_of_attacks,
+    damage_dice: this.$store.state.entities[this.index].damage_dice,
+    flat_damage_bonus: this.$store.state.entities[this.index].flat_damage_bonus,
   })
 }
 </script>

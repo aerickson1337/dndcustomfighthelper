@@ -63,7 +63,7 @@ export default {
   },
   methods: {
     updateDiceCounts(event) {
-      this.playerData[event.refKey].inputs[event.refDiceSize][event.refDamageType] = event.dice[event.refDiceSize][event.refDamageType]
+      this.playerData[event.refKey].inputs.dice[event.index][event.refDamageType] = event.dice
     },
     updateSingleValue(event) {
       var keyName = Object.keys(event)[1]
@@ -91,12 +91,13 @@ export default {
       numberofattacks: 1,
       flatdamage: '',
       selectedExtras: [],
-      diceTypes: ['d4','d6','d8','d10','d12'],
-      d4: { value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-      d6: { value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-      d8: { value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-      d10: { value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-      d12: { value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 }
+      dice: [
+        { name: 'd4', value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
+        { name: 'd6', value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
+        { name: 'd8', value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
+        { name: 'd10', value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
+        { name: 'd12', value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 }
+      ]
     }
   })
 }

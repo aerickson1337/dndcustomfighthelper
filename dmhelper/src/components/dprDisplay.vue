@@ -71,7 +71,7 @@ export default {
     },
     buffToggles() {
       var avgDamage = this.averageDamage
-      var allBonuses = this.generateBonusDiceArray(this.inputs.diceTypes)
+      var allBonuses = this.generateBonusDiceArray()
       var hitchance = dmgLib.genericBBB(this.targetAC, this.inputs.attackbonus, allBonuses)
 
       hitchance = this.determineModifiedHitchance(hitchance)
@@ -81,59 +81,34 @@ export default {
       return buffedDPR * this.inputs.numberofattacks
     },
     averageDamage() {
-      var avgDamage = dmgLib.avgdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dmgLib.avgdamage(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dmgLib.avgdamage(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dmgLib.avgdamage(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dmgLib.avgdamage(this.inputs.d12.value, this.inputs.d12.damageCount) +
-                      this.inputs.flatdamage
-      return avgDamage
+      return (this.inputs.dice.map(dice => 
+        dmgLib.avgdamage(dice.value, dice.damageCount)
+      ).reduce((a,b) => a + b) + this.inputs.flatdamage)
     },
     averageDamageGWF() {
-      var avgDamage = dmgLib.avgdamageGWF(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dmgLib.avgdamageGWF(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dmgLib.avgdamageGWF(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dmgLib.avgdamageGWF(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dmgLib.avgdamageGWF(this.inputs.d12.value, this.inputs.d12.damageCount) +
-                      this.inputs.flatdamage
-      return avgDamage
+      return (this.inputs.dice.map(dice => 
+        dmgLib.avgdamageGWF(dice.value, dice.damageCount)
+      ).reduce((a,b) => a + b) + this.inputs.flatdamage)
     },
     averageDamageEA() {
-      var avgDamage = dmgLib.avgdamageEA(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dmgLib.avgdamageEA(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dmgLib.avgdamageEA(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dmgLib.avgdamageEA(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dmgLib.avgdamageEA(this.inputs.d12.value, this.inputs.d12.damageCount) +
-                      this.inputs.flatdamage
-      return avgDamage
+      return (this.inputs.dice.map(dice => 
+        dmgLib.avgdamageEA(dice.value, dice.damageCount)
+      ).reduce((a,b) => a + b) + this.inputs.flatdamage)
     },
     averageDamageGWFEA() {
-      var avgDamage = dmgLib.avgdamageGWFEA(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dmgLib.avgdamageGWFEA(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dmgLib.avgdamageGWFEA(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dmgLib.avgdamageGWFEA(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dmgLib.avgdamageGWFEA(this.inputs.d12.value, this.inputs.d12.damageCount) +
-                      this.inputs.flatdamage
-
-      return avgDamage
+      return (this.inputs.dice.map(dice => 
+        dmgLib.avgdamageGWFEA(dice.value, dice.damageCount)
+      ).reduce((a,b) => a + b) + this.inputs.flatdamage)
     },
     maxDamage() {
-      var maxDamage = dmgLib.maxdamage(this.inputs.d4.value, this.inputs.d4.damageCount) + 
-                      dmgLib.maxdamage(this.inputs.d6.value, this.inputs.d6.damageCount) + 
-                      dmgLib.maxdamage(this.inputs.d8.value, this.inputs.d8.damageCount) + 
-                      dmgLib.maxdamage(this.inputs.d10.value, this.inputs.d10.damageCount) + 
-                      dmgLib.maxdamage(this.inputs.d12.value, this.inputs.d12.damageCount) +
-                      this.inputs.flatdamage
-      return maxDamage
+      return (this.inputs.dice.map(dice => 
+        dmgLib.maxdamage(dice.value, dice.damageCount)
+      ).reduce((a,b) => a + b) + this.inputs.flatdamage)
     },
     minDamage() {
-      var minDamage = dmgLib.mindamage(this.inputs.d4.damageCount) + 
-                      dmgLib.mindamage(this.inputs.d6.damageCount) + 
-                      dmgLib.mindamage(this.inputs.d8.damageCount) + 
-                      dmgLib.mindamage(this.inputs.d10.damageCount) + 
-                      dmgLib.mindamage(this.inputs.d12.damageCount) +
-                      this.inputs.flatdamage
-      return minDamage
+      return (this.inputs.dice.map(dice => 
+        dmgLib.mindamage(dice.value, dice.damageCount)
+      ).reduce((a,b) => a + b) + this.inputs.flatdamage)
     },
     DPR() {
       var givenDPR = dmgLib.damagePerRound(this.chanceToHit, dmgLib.critchance(20), this.averageDamage)
@@ -144,23 +119,23 @@ export default {
     roundToPercent(num) {
       return Math.round(num * 100)
     },
-    generateBonusDiceArray(diceTypes) {
+    generateBonusDiceArray() {
       // all buffs stored here
       var allBonuses = []
-      diceTypes.forEach(dice => {
+      this.inputs.dice.forEach(dice => {
         var bonusDiceArray = [] // create an array for each dice size, reset the array each iteration
-        for (var i = 1; i <= this.inputs[dice].value; i++) {
+        for (var i = 1; i <= dice.value; i++) {
           bonusDiceArray.push(i)
         }
         // if that dice size has inputs, push that many bonus inputs to allBonuses for math later
-        if (this.inputs[dice].bonusCount > 0) {
-          for (var j = 0; j < this.inputs[dice].bonusCount; j++) {
+        if (dice.bonusCount > 0) {
+          for (var j = 0; j < dice.bonusCount; j++) {
             allBonuses.push([...bonusDiceArray])
           }
         }
         // while we do this get the reduction/debuff values as well and push them to allBonuses for math later
-        if (this.inputs[dice].reductionCount > 0) {
-          for (var k = 0; k < this.inputs[dice].reductionCount; k++) {
+        if (dice.reductionCount > 0) {
+          for (var k = 0; k < dice.reductionCount; k++) {
             allBonuses.push([...bonusDiceArray].map(x => x * -1))
           }
         }
