@@ -8,7 +8,7 @@ export default class Entity {
     // positive_bonus_dice, negative_bonus_dice
     // has_great_weapon_fighting, has_elemental_adept, has_great_weapon_master_crit_bonus,
     // has_elven_accuracy, has_halfling_lucky
-    // critical_bonus_dice
+    // critical_bonus_dice 
     // ----------------------------------------
     constructor({...data}) {
         // set constructor values if provided
@@ -16,13 +16,17 @@ export default class Entity {
             this[key] = data[key]
         }
         if (this.dice == null || this.dice.length === 0) {
-            this.dice = [
-                { name: 'd4', value: 4, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-                { name: 'd6', value: 6, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-                { name: 'd8', value: 8, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-                { name: 'd10', value: 10, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 },
-                { name: 'd12', value: 12, damageCount: 0, bonusCount: 0, reductionCount: 0, criticalCount: 0 }
-            ]
+            let possibleDice = [4, 6, 8, 10, 12]
+            this.dice = possibleDice.map(diceVal => {
+                return { 
+                    name: 'd'+diceVal,
+                    value: diceVal,
+                    damageCount: "",
+                    bonusCount: "",
+                    reductionCount: "",
+                    criticalCount: "" 
+                }
+            })
         }
     }
 

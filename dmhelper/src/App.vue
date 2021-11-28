@@ -1,5 +1,19 @@
 <template>
   <div class="root">
+    <div class="ml-3">
+    <b-btn variant="outline-primary" @click="$store.commit('saveAsJson')">Save to File</b-btn>
+    <b-btn variant="outline-primary" @click="$refs.hiddenUploadButton.$el.click()">Load from File</b-btn>
+    <b-form-file
+      ref="hiddenUploadButton"
+      hidden
+      v-model="jsonFile"
+      class="mt-3"
+      plain
+      accept=".json"
+      @input="loadFromFile()"
+    >
+    </b-form-file>
+    </div>
     <div class="container-fluid">
       <div class="row">
         <div class="col">
@@ -23,119 +37,78 @@
       <div class="row">
         <div class="col-lg-6 w-50">
           <div>
-            <div v-for="(entity, index) in $store.state.entities" :key="index">
-              {{entity}}
+            <div v-for="(player, index) in $store.state.players" :key="index">
             <entityForm
-              :entity="entity"
               :index="index"
+              :entity="player"
               :bossAC="bossAC"
-              @sendPlayerData="sendPlayerData">
+              >
             </entityForm>
             </div>
+            <b-btn variant="outline-primary" @click="$store.commit('addNewEntity', 'players')">Add Player</b-btn>
           </div>
-          <div class="form-group row my-1 no-margin">
-            <b-input-group>
-              <b-input-group-prepend>
-                <span class="input-group-text">Player Count</span>
-              </b-input-group-prepend>
-              <b-form-input
-                v-model.number="playerCount"
-                id="playerCount"
-                size="xs"
-                class="ACABinput input-override">
-              </b-form-input>
-            </b-input-group>
-          </div>
-          <!-- <div v-for="player in playerList" :key="player">
-            <playerDprCalculations
-              :player="player"
-              :bossAC="bossAC"
-              @sendPlayerData="sendPlayerData">
-            </playerDprCalculations>
-            <hr class="line-breaker"/>
-          </div> -->
         </div>
         <div class="col-lg-6 w-50">
-          <bossDprCalculations
-            :playerData="playerData"
-            @sendBossData="sendBossData"
-            @updateBossStat="updateBossStat">
-          </bossDprCalculations>
+          <div>
+            <div v-for="(monster, index) in $store.state.monsters" :key="index">
+            <entityForm
+              :index="index"
+              :entity="monster"
+              :bossAC="bossAC"
+              >
+            </entityForm>
+            </div>
+            <b-btn variant="outline-primary" @click="$store.commit('addNewEntity', 'monsters')">Add Monster</b-btn>
+          </div>
         </div>
       </div>
     </div>
-    <!-- <b-button @click="setJsonData()">Dump JSON</b-button>
-    <b-button @click="loadJsonData()" class="ml-2">Load JSON</b-button>
-    <br>
-    <textarea v-model="jsonData" rows="8" cols="80"></textarea> -->
   </div>
 </template>
 <script>
 // import playerDprCalculations from '@/components/playerDprCalculations.vue'
-import bossDprCalculations from '@/components/bossDprCalculations.vue'
+// import bossDprCalculations from '@/components/bossDprCalculations.vue'
 // import nerdShit from '@/components/nerdshit.vue'
-import BossDprCalculations from './components/bossDprCalculations.vue'
+// import BossDprCalculations from './components/bossDprCalculations.vue'
 import entityForm from '@/components/entity/entityForm.vue'
 
 // import * as d3 from "d3"
 export default {
   components: {
     // playerDprCalculations,
-    bossDprCalculations,
+    // bossDprCalculations,
     // nerdShit,
-    BossDprCalculations,
+    // BossDprCalculations,
     entityForm
   },
   computed: {
-    playerList() {
-      var playerList = []
-      for (var i = 0; i < this.playerCount; i++) {
-        playerList.push('Player_' + i)
-      }
-      return playerList
-    }
   },
   watch: {
-    playerList() {
-      Object.keys(this.playerData).forEach(playerName => {
-        if (!(this.playerList.includes(playerName))) {
-          this.$delete(this.playerData, playerName)
-        }
-      })
-    },
-    bossData() {
-    }
   },
   methods: {
-    updateBossStat(event) {
-      this[event.refKey] = event.newVal
-    },
-    sendBossData(event) {
-      this.bossData = Object.assign({}, event)
-    },
-    sendPlayerData(event) {
-      this.entity.dice = event.Player_0.inputs.dice
-      this.playerData = Object.assign({}, this.playerData, event)
-    },
-    setJsonData() {
-      this.jsonData = JSON.stringify({ 
-        data: { 
-          playerData: this.playerData,
-          bossData: this.bossData
-        }
-      })
-    },
-    loadJsonData() {
-      var tempData = JSON.parse(this.jsonData)
-      this.playerData = tempData.data.playerData
-      this.bossData = tempData.data.bossData
+    loadFromFile() {
+      let fr = new FileReader()
+      fr.onload = (event) => {
+          try {
+            this.jsonData = JSON.parse(event.target.result)
+            console.log('inside', this.jsonData)
+          } catch (ex) {
+            console.log('exception when trying to parse provided json file: ' + ex)
+            return null
+          }
+      }
+      fr.onloadend = () => {
+        this.$store.commit('loadFromJson', this.jsonData)
+      }
+      fr.readAsText(this.jsonFile)
     }
   },
   data: () => ({
     bossAC: 16,
     bossHP: 0,
     bossData: {},
-    jsonData: null
+    jsonFile: null,
+    jsonData: {}
   })
 }
 </script>
@@ -143,6 +116,9 @@ export default {
 .no-margin {
   margin-left: 0px;
   margin-right: 0px;
+}
+.no-padding {
+  padding: 0 0 0 0;
 }
 .line-breaker {
   border-top: 1px solid white;
@@ -163,7 +139,11 @@ export default {
   color: white;
 }
 .ACABinput {
-  max-width: 136px;
+  max-width: 125px;
+  color: white;
+}
+.atkInput {
+  max-width: 60px;
   color: white;
 }
 .input-group-text {

@@ -1,33 +1,33 @@
 <template>
   <div>
-      {{index}}
-    <playerDprInput
-      :entity="entity"
+    <entityInputs
       :index="index"
-      :renderAdvanced="true"
-    >
-    </playerDprInput>
-    <dprDisplay
       :entity="entity"
-      :targetAC="bossAC">
+    >
+    </entityInputs>
+    <dprDisplay
+      :targetAC="bossAC"
+      :entity="entity"
+    >
     </dprDisplay>
   </div>
 </template>
 <script>
-import playerDprInput from '@/components/entity/entityInputForm.vue'
+import entityInputs from '@/components/entity/entityInputForm.vue'
 import dprDisplay from '@/components/entity/entityDprDisplay.vue'
 export default {
   components: {
-    playerDprInput,
+    entityInputs,
     dprDisplay
   },
   props: {
-    entity: {
-      required: true
-    },
     index: {
       required: true
-    }
+    },
+    bossAC: {
+      required: true
+    },
+    entity: {}
   },
   computed: {
   },

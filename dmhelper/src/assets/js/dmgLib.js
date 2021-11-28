@@ -89,7 +89,7 @@ dmgLib.genericBBB = (ac, hitbonus, fullset) => {
 }
 
 dmgLib.avgdamage = (dicesize, numdice) => {
-  if (numdice == 0) {
+  if (numdice === 0 || numdice === "") {
     return 0
   }
   var dicerange = []
@@ -101,7 +101,7 @@ dmgLib.avgdamage = (dicesize, numdice) => {
 }
 
 dmgLib.avgdamageGWF = (dicesize, numdice) => {
-  if (numdice == 0) {
+  if (numdice === 0 || numdice === "") {
     return 0
   }
   var dicerange = []
@@ -125,7 +125,7 @@ dmgLib.avgdamageGWF = (dicesize, numdice) => {
 }
 
 dmgLib.avgdamageEA = (dicesize, numdice) => {
-  if (numdice == 0) {
+  if (numdice === 0 || numdice === "") {
     return 0
   }
 
@@ -142,7 +142,7 @@ dmgLib.avgdamageEA = (dicesize, numdice) => {
 }
 
 dmgLib.avgdamageGWFEA = (dicesize, numdice) => {
-  if (numdice == 0) {
+  if (numdice === 0 || numdice === "") {
     return 0
   }
   var dicerange = []
@@ -170,7 +170,7 @@ dmgLib.avgdamageGWFEA = (dicesize, numdice) => {
 }
 
 dmgLib.avgdamageFoP = (dicesize, numdice) => {
-  if (numdice == 0) {
+  if (numdice === 0 || numdice === "") {
     return 0
   }
   var dicerange = []

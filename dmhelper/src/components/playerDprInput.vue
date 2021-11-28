@@ -103,6 +103,7 @@
               :id="'checkbox-group-1'+dataKey"
               v-model="selectedExtras"
               :options="extraOptions"
+              :disabled="extraOptions.disabled"
               :name="'extraOptions-1-'+dataKey"
               @change="updateSingleValue('selectedExtras', $event)">
             </b-form-checkbox-group>
