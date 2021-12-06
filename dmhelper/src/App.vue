@@ -1,19 +1,19 @@
 <template>
-  <div class="root">
-    <div class="ml-3">
-    <b-btn variant="outline-primary" @click="$store.commit('saveAsJson')">Save to File</b-btn>
-    <b-btn variant="outline-primary" @click="$refs.hiddenUploadButton.$el.click()">Load from File</b-btn>
-    <b-form-file
-      ref="hiddenUploadButton"
-      hidden
-      v-model="jsonFile"
-      class="mt-3"
-      plain
-      accept=".json"
-      @input="loadFromFile()"
-    >
-    </b-form-file>
-    </div>
+  <div class="d-flex flex-column">
+    <header class="ml-3">
+      <b-btn variant="outline-info" @click="$store.commit('saveAsJson')">Save Encounter to File</b-btn>
+      <b-btn variant="outline-info" @click="$refs.hiddenUploadButton.$el.click()">Load Encounter from File</b-btn>
+      <b-form-file
+        ref="hiddenUploadButton"
+        hidden
+        v-model="jsonFile"
+        class="mt-3"
+        plain
+        accept=".json"
+        @input="loadFromFile()"
+      >
+      </b-form-file>
+    </header>
     <div class="container-fluid">
       <div class="row">
         <div class="col">
@@ -45,20 +45,18 @@
               >
             </entityForm>
             </div>
-            <b-btn variant="outline-primary" @click="$store.commit('addNewEntity', 'players')">Add Player</b-btn>
           </div>
         </div>
         <div class="col-lg-6 w-50">
           <div>
             <div v-for="(monster, index) in $store.state.monsters" :key="index">
-            <entityForm
-              :index="index"
-              :entity="monster"
-              :bossAC="bossAC"
-              >
-            </entityForm>
+              <entityForm
+                :index="index"
+                :entity="monster"
+                :bossAC="bossAC"
+                >
+              </entityForm>
             </div>
-            <b-btn variant="outline-primary" @click="$store.commit('addNewEntity', 'monsters')">Add Monster</b-btn>
           </div>
         </div>
       </div>

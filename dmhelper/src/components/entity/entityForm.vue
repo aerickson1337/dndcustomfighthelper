@@ -5,20 +5,26 @@
       :entity="entity"
     >
     </entityInputs>
-    <dprDisplay
-      :targetAC="bossAC"
-      :entity="entity"
+    <b-btn
+      @click="entity.init_new_attack()"
+      variant="outline-info"
     >
-    </dprDisplay>
+      Add New Attack
+    </b-btn>
+    <b-btn
+      variant="outline-info"
+      @click="$store.commit('addNewEntity', entity.entity_type)"
+      v-if="($store.state[entity.entity_type].length - 1) === index"
+    >
+      Add {{entity.pretty_entity_type()}}
+    </b-btn>
   </div>
 </template>
 <script>
 import entityInputs from '@/components/entity/entityInputForm.vue'
-import dprDisplay from '@/components/entity/entityDprDisplay.vue'
 export default {
   components: {
     entityInputs,
-    dprDisplay
   },
   props: {
     index: {

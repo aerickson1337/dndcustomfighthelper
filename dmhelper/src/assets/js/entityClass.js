@@ -1,10 +1,55 @@
 import dmgLib from '@/assets/js/dmgLib.js'
+import defaultAttack from '@/assets/json/entities/defaultAttack.json'
 
 export default class Entity {
     // Possible expected Constructor values
     // ----------------------------------------
     // name
-    // armor_class, hit_points, attack_bonus, number_of_attacks, damage_dice, flat_damage_bonus
+    // armor_class, hit_points
+    // attack_bonus, number_of_attacks, damage_dice, flat_damage_bonus
+    // positive_bonus_dice, negative_bonus_dice
+    // has_great_weapon_fighting, has_elemental_adept, has_great_weapon_master_crit_bonus,
+    // has_elven_accuracy, has_halfling_lucky
+    // critical_bonus_dice 
+    // ----------------------------------------
+    constructor({...data}) {
+        this.map_and_pop('name', data)
+        this.map_and_pop('armor_class', data)
+        this.map_and_pop('hit_points', data)
+        this.map_and_pop('entity_type', data)
+        // if (data.attacks.length && data.attacks.length > 0) {
+        //   this.attacks.forEach(attack) => {
+        //   }
+        // }
+        this.attacks = [new EntityAttack({...data})]
+    }
+
+    map_and_pop(key, data) {
+        if (key in data) {
+            this[key] = data[key]
+            delete data[key]
+        }
+    }
+
+    init_new_attack() {
+        this.attacks.push(new EntityAttack({...defaultAttack}))
+    }
+
+    delete_attack_at_index(index) {
+        this.attacks.splice(index, 1)
+    }
+
+    pretty_entity_type() {
+        var prettyName = (this.entity_type.charAt(0).toUpperCase() + this.entity_type.slice(1)).slice(0, -1)
+        return prettyName
+    }
+}
+
+class EntityAttack {
+    // Possible expected Constructor values
+    // ----------------------------------------
+    // attack_name
+    // attack_bonus, number_of_attacks, damage_dice, flat_damage_bonus
     // positive_bonus_dice, negative_bonus_dice
     // has_great_weapon_fighting, has_elemental_adept, has_great_weapon_master_crit_bonus,
     // has_elven_accuracy, has_halfling_lucky
@@ -29,6 +74,7 @@ export default class Entity {
             })
         }
     }
+
 
     whoami() {
         return this
@@ -70,7 +116,7 @@ export default class Entity {
         let buff_dice_array = []
         if (include_flat_buffs) {
             buff_dice_array = this.generate_bonus_dice_array()
-        }
+        }``
         return dmgLib.genericBBB(target_armor_class, this.attack_bonus, buff_dice_array)
     }
 
