@@ -1,24 +1,5 @@
 # dmhelper
 
-layout thoughts so far
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ## Project setup
 ```
