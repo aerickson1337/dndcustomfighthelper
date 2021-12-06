@@ -1,0 +1,15 @@
+{
+    "name": "Fred",
+    "armor_class": 15,
+    "hit_points": 20,
+    "attack_bonus": 5,
+    "number_of_attacks": 1,
+    "flat_damage_bonus": 4,
+    "dice": [],
+    "has_elven_accuracy": false,
+    "has_great_weapon_fighting": false,
+    "has_elemental_adept": false,
+    "has_great_weapon_master_crit_bonus": false,
+    "has_halfling_lucky": false,
+    "critical_bonus_dice": false
+}
