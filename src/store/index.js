@@ -28,9 +28,9 @@ const store = new Vuex.Store({
       removeEntityAtIndex(state, payload) {
         state[payload.entity_type].splice(payload.index, 1)
       },
-      saveAsJson(state) {
+      saveAsJson(state, filename) {
         var currentState = { players: state.players, monsters: state.monsters }
-        saveData(currentState, 'test.json')
+        saveData(currentState, filename + '.json')
       },
       loadFromJson(state, payload) {
         if (payload.players != null) {
