@@ -30,10 +30,9 @@ export default {
     index: {
       required: true
     },
-    bossAC: {
+    entity: {
       required: true
-    },
-    entity: {}
+    }
   },
   computed: {
   },

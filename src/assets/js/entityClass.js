@@ -17,11 +17,14 @@ export default class Entity {
         this.map_and_pop('armor_class', data)
         this.map_and_pop('hit_points', data)
         this.map_and_pop('entity_type', data)
-        // if (data.attacks.length && data.attacks.length > 0) {
-        //   this.attacks.forEach(attack) => {
-        //   }
-        // }
-        this.attacks = [new EntityAttack({...data})]
+        if (data.attacks != null && data.attacks.length && data.attacks.length > 0) {
+          this.attacks = []
+          data.attacks.forEach(attack => {
+            this.attacks.push(new EntityAttack({...attack}))
+          })
+        } else {
+          this.attacks = [new EntityAttack({...data})]
+        }
     }
 
     map_and_pop(key, data) {
@@ -48,7 +51,7 @@ export default class Entity {
 class EntityAttack {
     // Possible expected Constructor values
     // ----------------------------------------
-    // attack_name
+    // attack_name, attack_enabled
     // attack_bonus, number_of_attacks, damage_dice, flat_damage_bonus
     // positive_bonus_dice, negative_bonus_dice
     // has_great_weapon_fighting, has_elemental_adept, has_great_weapon_master_crit_bonus,
@@ -57,6 +60,7 @@ class EntityAttack {
     // ----------------------------------------
     constructor({...data}) {
         // set constructor values if provided
+        this.attack_enabled = true
         for (var key in data) {
             this[key] = data[key]
         }

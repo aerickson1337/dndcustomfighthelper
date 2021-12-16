@@ -1,15 +1,159 @@
 {
-    "name": "Fred",
-    "armor_class": 15,
-    "hit_points": 20,
-    "attack_bonus": 5,
-    "number_of_attacks": 1,
-    "flat_damage_bonus": 4,
-    "dice": [],
-    "has_elven_accuracy": false,
-    "has_great_weapon_fighting": false,
-    "has_elemental_adept": false,
-    "has_great_weapon_master_crit_bonus": false,
-    "has_halfling_lucky": false,
-    "critical_bonus_dice": false
+    "attacks": [
+        {
+            "attack_bonus": 9,
+            "number_of_attacks": 1,
+            "flat_damage_bonus": 5,
+            "dice": [
+                {
+                    "name": "d4",
+                    "value": 4,
+                    "damageCount": "",
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                },
+                {
+                    "name": "d6",
+                    "value": 6,
+                    "damageCount": "",
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                },
+                {
+                    "name": "d8",
+                    "value": 8,
+                    "damageCount": "",
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                },
+                {
+                    "name": "d10",
+                    "value": 10,
+                    "damageCount": "",
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                },
+                {
+                    "name": "d12",
+                    "value": 12,
+                    "damageCount": 2,
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                }
+            ],
+            "has_elven_accuracy": false,
+            "has_great_weapon_fighting": false,
+            "has_elemental_adept": false,
+            "has_great_weapon_master_crit_bonus": false,
+            "has_halfling_lucky": false,
+            "critical_bonus_dice": false,
+            "attack_name": "REND SOUL"
+        },
+        {
+            "attack_bonus": 10,
+            "number_of_attacks": 2,
+            "flat_damage_bonus": 5,
+            "dice": [
+                {
+                    "name": "d4",
+                    "value": 4,
+                    "damageCount": "",
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                },
+                {
+                    "name": "d6",
+                    "value": 6,
+                    "damageCount": 2,
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                },
+                {
+                    "name": "d8",
+                    "value": 8,
+                    "damageCount": "",
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                },
+                {
+                    "name": "d10",
+                    "value": 10,
+                    "damageCount": "",
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                },
+                {
+                    "name": "d12",
+                    "value": 12,
+                    "damageCount": "",
+                    "bonusCount": "",
+                    "reductionCount": "",
+                    "criticalCount": ""
+                }
+            ],
+            "has_elven_accuracy": false,
+            "has_great_weapon_fighting": false,
+            "has_elemental_adept": false,
+            "has_great_weapon_master_crit_bonus": false,
+            "has_halfling_lucky": false,
+            "critical_bonus_dice": false,
+            "attack_name": "REND LIFE"
+        }
+    ],
+    "dice": [
+        {
+            "name": "d4",
+            "value": 4,
+            "damageCount": "",
+            "bonusCount": "",
+            "reductionCount": "",
+            "criticalCount": ""
+        },
+        {
+            "name": "d6",
+            "value": 6,
+            "damageCount": "",
+            "bonusCount": "",
+            "reductionCount": "",
+            "criticalCount": ""
+        },
+        {
+            "name": "d8",
+            "value": 8,
+            "damageCount": "",
+            "bonusCount": "",
+            "reductionCount": "",
+            "criticalCount": ""
+        },
+        {
+            "name": "d10",
+            "value": 10,
+            "damageCount": "",
+            "bonusCount": "",
+            "reductionCount": "",
+            "criticalCount": ""
+        },
+        {
+            "name": "d12",
+            "value": 12,
+            "damageCount": "",
+            "bonusCount": "",
+            "reductionCount": "",
+            "criticalCount": ""
+        }
+    ],
+    "has_elven_accuracy": null,
+    "has_great_weapon_fighting": null,
+    "has_elemental_adept": null,
+    "has_halfling_lucky": null,
+    "has_great_weapon_master_crit_bonus": null
 }
